@@ -43,6 +43,8 @@
 #include "rviz_cloud_annotation_points.h"
 #include "rviz_cloud_annotation_undo.h"
 #include "point_cloud_feature_plane.h"
+#include "point_neighborhood_search.h"
+#include "point_cloud_plane_detect.h"
 
 #include <sys/stat.h>
 #include <sys/types.h>
@@ -679,6 +681,9 @@ public:
     x = x * (1.5 - (half_x * x * x));
     return 1 / x;
   }
+
+  Uint64Vector curveid[16];
+  int idtest = 0;
 };
 
 #endif  // RVIZ_CLOUD_ANNOTATION_CLASS_H

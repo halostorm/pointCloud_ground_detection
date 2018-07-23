@@ -72,6 +72,7 @@ add_executable(rviz_cloud_annotation_node
   src/point_neighborhood.cpp
   src/point_neighborhood_search.cpp
   src/point_cloud_feature_plane.cpp
+  src/point_cloud_plane_detect.cpp
   ${MAYBE_PCL_COMMON_COLORS}
   )
 
@@ -102,24 +103,4 @@ target_link_libraries(rviz_cloud_annotation_plugin
   ${Eigen3_LIBRARIES}
   ${catkin_LIBRARIES}
   Qt5::Widgets
-)
-
-#############
-## Install ##
-#############
-
-install(TARGETS rviz_cloud_annotation_node
-        RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
-
-install(TARGETS  rviz_cloud_annotation_plugin 
-        ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-        LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION})
-
-install(DIRECTORY include/${PROJECT_NAME}/
-  DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
-  FILES_MATCHING PATTERN "*.h"
-)
-
-install(DIRECTORY launch
-  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/launch
 )

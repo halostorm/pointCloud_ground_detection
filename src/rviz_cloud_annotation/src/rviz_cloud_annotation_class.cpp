@@ -32,18 +32,13 @@
  *
  */
 
-#include "point_neighborhood_search.h"
 #include "rviz_cloud_annotation_class.h"
-
 // STL
 #include <cstring>
-
 // Boost
 #include <boost/date_time/posix_time/posix_time.hpp>
-
 // Eigen
 #include <Eigen/Dense>
-
 // ROS
 #include <eigen_conversions/eigen_msg.h>
 
@@ -389,30 +384,31 @@ void RVizCloudAnnotation::LoadCloud(const std::string &filename, const std::stri
       xyz_rgb_cloud.push_back(point);
     }
   }
-  // pcl::fromPCLPointCloud2(cloud2, xyz_rgb_cloud);
-
   pcl::copyPointCloud(xyz_rgb_cloud, cloud);
-
   for (uint64 i = 0; i < cloud.size(); i++)
   {
     ids_in_plane_flag.push_back(0);
   }
 
-  // Hough Transform 检测平面，速度太慢
-  // PointCloudFeaturePlane pcfp;
-  // pcfp.generate_blocks_value();
-  // clock_t start, finish;
-  // start = clock();
-  // pcfp.vote_blocks(cloud);
-  // finish = clock();
-  // int deltTime = (finish - start) / CLOCKS_PER_SEC;
-  // ROS_INFO("rviz_cloud_annotation: cost time: %d (s)", deltTime);
+  PointCloudPlaneDetect pcpd;
+  clock_t start, finish;
+  start = clock();
+
+  pcpd.SearchCurves(cloud);
+  for (int i = 0; i < 16; i++)
+  {
+    curveid[i].clear();
+    curveid[i].insert(curveid[i].end(), pcpd.mCurvesId[i].begin(), pcpd.mCurvesId[i].end());
+    // curveid[i] =  pcpd.mCurvesId[i];
+    ROS_INFO("rviz_cloud_annotation: curves[%d] size: %ld", i, curveid[i].size());
+  }
+  finish = clock();
+  float deltTime = (finish - start) / CLOCKS_PER_SEC;
+  ROS_INFO("rviz_cloud_annotation: cost time: %f (s)", deltTime);
 }
 
 void RVizCloudAnnotation::colorize_point_cloud(double intensity, PointXYZRGB *sample)
-{  // This function adds RGB color to points in the point cloud based on each point's refelctivity.
-  // Blue: Low reflectivity, Yellow/Green: Medium reflectivity, Red: High reflectivity
-  // ROS_INFO("rviz_cloud_annotation: intensity %f", intensity);
+{
   if (intensity > 1)
   {
     intensity = intensity / 100;
@@ -475,6 +471,24 @@ void RVizCloudAnnotation::colorize_point_cloud(double intensity, PointXYZRGB *sa
 
 void RVizCloudAnnotation::Save(const bool is_autosave)
 {
+  if (m_edit_mode == EDIT_MODE_CONTROL_POINT && idtest < 16)
+  {
+    const Uint64Vector changed_labels = m_undo_redo.SetControlPointVector(curveid[idtest], 0, m_current_label + idtest);
+    SendControlPointsMarker(changed_labels, true);
+    SendPointCounts(changed_labels);
+    SendUndoRedoState();
+    PointXYZRGBLCloud cloudk;
+    pcl::copyPointCloud(*m_cloud, cloudk);
+    std::string filenamek = std::string("/home/halo/1.txt");
+    std::ofstream ofilek(filenamek.c_str());
+    for (int j = 0; j < curveid[idtest].size(); j++)
+    {
+      ofilek << cloudk[curveid[idtest][j]].x << "\t" << cloudk[curveid[idtest][j]].y << "\t"
+             << cloudk[curveid[idtest][j]].z << "\n";
+    }
+    idtest++;
+  }
+
   if (is_autosave)
     ROS_INFO("rviz_cloud_annotation: auto-saving.");
 
@@ -1030,6 +1044,7 @@ void RVizCloudAnnotation::onNew(const std_msgs::UInt32 &label_msg)
 {
   //保存
   Save(false);
+  idtest = 0;
   //清除旧Markers
   for (int i = 0; i <= BBOX_ID; i++)
   {
@@ -1665,9 +1680,6 @@ void RVizCloudAnnotation::VectorSelection(const Uint64Vector &ids)  //对选择�
       }
       generatePlane(*m_cloud);
     }
-
-    // ROS_INFO("rviz_cloud_annotation: selection cleared %i points.", int(ids.size()));
-    // ROS_INFO("rviz_cloud_annotation: leave %i points.", int(n_ids.size()));
   }
   else
   {
@@ -1954,9 +1966,10 @@ void RVizCloudAnnotation::generateBbox(const PointXYZRGBNormalCloud &cloud, bool
     s[8] += m_box_bias[BBOX_ID][4];
     s[9] += m_box_bias[BBOX_ID][5];
 
-    //ROS_INFO("rviz_cloud_annotation: Yaw sin: %f", sin(BBOX_YAW));
+    // ROS_INFO("rviz_cloud_annotation: Yaw sin: %f", sin(BBOX_YAW));
 
-    //ROS_INFO("rviz_cloud_annotation: S: %f %f %f %f %f %f %f %f %f %f", s[0], s[1], s[2], s[3], s[4], s[5], s[6], s[7], s[8], s[9]);
+    // ROS_INFO("rviz_cloud_annotation: S: %f %f %f %f %f %f %f %f %f %f", s[0], s[1], s[2], s[3], s[4], s[5], s[6],
+    // s[7], s[8], s[9]);
 
     float shape[10];
     float A = tan(BBOX_YAW);
@@ -1984,7 +1997,8 @@ void RVizCloudAnnotation::generateBbox(const PointXYZRGBNormalCloud &cloud, bool
     shape_ = shape;
 
     AddBbox(A, B, B1, B2, B3, B4, shape[9], shape[8], if_tilt);
-    //ROS_INFO("rviz_cloud_annotation: Bbox:  %f  %f  %f  %f  %f  %f  %f  %f", A, B, B1, B2, B3, B4, shape[9], shape[8]);
+    // ROS_INFO("rviz_cloud_annotation: Bbox:  %f  %f  %f  %f  %f  %f  %f  %f", A, B, B1, B2, B3, B4, shape[9],
+    // shape[8]);
   }
 
   BboxToMarker(shape_, BBOX_ID, if_tilt);
@@ -2299,12 +2313,12 @@ bool RVizCloudAnnotation::InBbox(float x, float y, float z, int i)
   else if (BBOX_SET[i][9] > 0)  // tilt
   {
     // ROS_INFO("rviz_cloud_annotation: exist 1 ");
-    //ROS_INFO("rviz_cloud_annotation: BBOX try:  %f  %f  %f  %f  %f  %f  %f  %f ", A, B, B1, B2, B3, B4, C1, C2);
+    // ROS_INFO("rviz_cloud_annotation: BBOX try:  %f  %f  %f  %f  %f  %f  %f  %f ", A, B, B1, B2, B3, B4, C1, C2);
 
     if ((y - B * x - B1) <= 0 && (y - B * x - B2) >= 0 && (y - A * x - B3) <= 0 && (y - A * x - B4) >= 0 && z <= C1 &&
         z >= C2)
     {
-      //ROS_INFO("rviz_cloud_annotation: exist 2 ");
+      // ROS_INFO("rviz_cloud_annotation: exist 2 ");
       return true;
     }
     else
