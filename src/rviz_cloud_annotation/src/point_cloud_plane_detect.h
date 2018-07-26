@@ -35,6 +35,9 @@
 #define _upperBound 15
 #define _numofrings 16
 
+#define _radiusRadio 6.9
+#define _srcLenThreshold 0.2
+
 #define _windowsize 100
 
 typedef int64_t int64;
@@ -86,4 +89,17 @@ public:
   }
 
   int64 GetScanringID(const float& angle);
+
+  float GetScanringRadius(int64 ID)
+  {
+    float radius = -1;
+
+    float angle = (_upperBound - _lowerBound) * 1.0 / _numofrings * ID + _lowerBound;
+    if (angle < -1)
+    {
+      radius = _radiusRadio * fabs(tan(_lowerBound * 1.0 / 180 * M_PI)) * fabs(tan((90 + angle) * 1.0 / 180 * M_PI));
+    }
+    ROS_INFO("PointCloudPlaneDetect: angle: %f , radius of %d is: %f", angle, ID, radius);
+    return radius;
+  }
 };

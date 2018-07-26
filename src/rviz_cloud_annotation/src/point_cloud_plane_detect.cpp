@@ -8,10 +8,20 @@ PointXYZRGBNormalCloud* PointCloudPlaneDetect::SearchCurves(PointXYZRGBNormalClo
   {
     PointXYZRGBNormal point = PointCloud[i];
     float angle = std::atan(point.z * InverseSqrt(point.x * point.x + point.y * point.y)) / (1.0f * M_PI) * 180.0f;
+    //ROS_INFO("PointCloudPlaneDetect: angle: %f", angle);
     int64 ringID = GetScanringID(angle);
-    curves[ringID].push_back(point);
-    curveids[ringID].push_back(i);
+    //ROS_INFO("PointCloudPlaneDetect: ringID: %ld", ringID);
+    if (ringID < _numofrings && ringID >= 0)
+    {
+      curves[ringID].push_back(point);
+      curveids[ringID].push_back(i);
+    }
+    else
+    {
+       ROS_INFO("PointCloudPlaneDetect: ringID: %ld", ringID);
+    }
   }
+  ROS_INFO("PointCloudPlaneDetect: OK1");
   for (int i = 0; i < _numofrings; i++)
   {
     ROS_INFO("PointCloudPlaneDetect: curves[%d] size: %ld", i, curves[i].size());
@@ -20,45 +30,74 @@ PointXYZRGBNormalCloud* PointCloudPlaneDetect::SearchCurves(PointXYZRGBNormalClo
       Curce2Plane(curves[i], i, curveids[i]);
     }
     ROS_INFO("PointCloudPlaneDetect: mCurvesId[%d] size: %ld", i, mCurvesId[i].size());
+    ROS_INFO("PointCloudPlaneDetect: OK2");
   }
+
   return curves;
 }
 
 PointXYZRGBNormalCloud* PointCloudPlaneDetect::Curce2Plane(PointXYZRGBNormalCloud& Curve, int64 ringID,
                                                            Uint64Vector& curveid)
 {
-  for (int k = 0; k < _windowsize; k++)
+  float radius = GetScanringRadius(ringID);
+  if (radius < 0)
   {
-    Curve.push_back(Curve[k]);
+    return NULL;
   }
-  for (int i = 0; i < Curve.size() - _windowsize; i += 1)
+  float arcLen = 0;
+  float disMean = 0;
+  int64 arcNum = 0;
+  for (int i = 1; i < Curve.size(); i += 1)
   {
-    float varDis = 0;
-    float varZ = 0;
-    float listDis[_windowsize];
-    float listZ[_windowsize];
-    for (int j = i; j < i + _windowsize; j++)
+    float dx = Curve[i].x - Curve[i - 1].x;
+    float dy = Curve[i].y - Curve[i - 1].y;
+    float dz = Curve[i].z - Curve[i - 1].z;
+
+    arcNum++;
+    float dis = 1 / InverseSqrt(Curve[i].x * Curve[i].x + Curve[i].y * Curve[i].y + Curve[i].z * Curve[i].z);
+    disMean += dis;
+    arcLen += (1 / InverseSqrt(dx * dx + dy * dy + dz * dz)) * (_radiusRadio / dis);
+
+    // ROS_INFO("PointCloudPlaneDetect: disMean: %f , radius: %f, arcNum: %d, arcLen: %f", disMean, radius, arcNum,
+    //         arcLen);
+
+    if (arcLen >= _srcLenThreshold)
     {
-      listDis[j - i] = 1 / InverseSqrt(Curve[j].x * Curve[j].x + Curve[j].y * Curve[j].y);
-      listZ[j - i] = Curve[j].z;
+      disMean /= arcNum;
+      if (arcNum > 7 && disMean > 0.8 * radius)
+      {
+        for (int k = i - arcNum + 1; k <= i; k++)
+        {
+          mCurvesId[ringID].push_back(curveid[k]);
+        }
+      }
+      arcLen = 0;
+      arcNum = 0;
+      disMean = 0;
     }
-    varDis = getVar(listDis);
-    varZ = getVar(listZ);
-    if (varDis < 10E-8 && varZ < 10E-8)
-    {
-      mCurvesId[ringID].push_back(curveid[i]);
-    }
+    // float varDis = 0;
+    // float varZ = 0;
+    // float listDis[_windowsize];
+    // float listZ[_windowsize];
+    // for (int j = i; j < i + _windowsize; j++)
+    // {
+    //   listDis[j - i] = 1 / InverseSqrt(Curve[j].x * Curve[j].x + Curve[j].y * Curve[j].y);
+    //   listZ[j - i] = Curve[j].z;
+    // }
+    // varDis = getVar(listDis);
+    // varZ = getVar(listZ);
+    // if (varDis < 10E-8 && varZ < 10E-8)
+    // {
+    //   mCurvesId[ringID].push_back(curveid[i]);
+    // }
   }
 }
 
 // PointXYZRGBNormalCloud* PointCloudPlaneDetect::Curce2Plane(PointXYZRGBNormalCloud& Curve, int64 ringID,
 //                                                            Uint64Vector& curveid)
 // {
-//   for (int i = 0; i < Curve.size() - 1; i += 1)
+//   for (int i = 0; i < Curve.size() - 1; i++)
 //   {
-//     float dx = fabs(Curve[i].x - Curve[i + 1].x);
-//     float dy = fabs(Curve[i].y - Curve[i + 1].y);
-//     float dz = fabs(Curve[i].z - Curve[i + 1].z);
 
 //     mCurvesId[ringID].push_back(curveid[i]);
 //   }
@@ -69,6 +108,7 @@ int64 PointCloudPlaneDetect::GetScanringID(const float& angle)
   return static_cast<int64>((angle - _lowerBound) / (1.0f * (_upperBound - _lowerBound)) * (_numofrings - 1) + 0.5);
 }
 
+/*
 typedef complex<int> POINT;
 bool circleLeastFit(const std::vector<POINT>& points, double& center_x, double& center_y, double& radius)
 {
@@ -120,3 +160,4 @@ bool circleLeastFit(const std::vector<POINT>& points, double& center_x, double& 
   radius = sqrt(a * a + b * b - 4 * c) / 2;
   return true;
 }
+*/

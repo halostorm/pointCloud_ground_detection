@@ -377,6 +377,7 @@ void RVizCloudAnnotation::LoadCloud(const std::string &filename, const std::stri
     point.x = cloud_in[i].x;
     point.y = cloud_in[i].y;
     point.z = cloud_in[i].z;
+
     float radius = m_sqrt(point.x * point.x + point.y * point.y);
     if (radius < DISTANCE_LIMMIT && fabs(point.z) < HEIGHT_LIMMIT)
     {
