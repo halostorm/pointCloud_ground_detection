@@ -480,8 +480,10 @@ void RVizCloudAnnotation::Save(const bool is_autosave)
     SendUndoRedoState();
     PointXYZRGBLCloud cloudk;
     pcl::copyPointCloud(*m_cloud, cloudk);
+    // ids_in_lane[idtest] = curveid[idtest];
+    // generateLane(*m_cloud);
     std::string filenamek = std::string("/home/halo/1.txt");
-    std::ofstream ofilek(filenamek.c_str());
+    std::ofstream ofilek(filenamek.c_str(),std::ios::app);
     for (int j = 0; j < curveid[idtest].size(); j++)
     {
       ofilek << cloudk[curveid[idtest][j]].x << "\t" << cloudk[curveid[idtest][j]].y << "\t"

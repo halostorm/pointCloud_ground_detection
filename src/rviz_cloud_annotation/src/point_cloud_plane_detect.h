@@ -33,10 +33,12 @@
 
 #define _lowerBound -15
 #define _upperBound 15
-#define _numofrings 16
+#define _numOfRings 16
 
 #define _radiusRadio 6.9
 #define _srcLenThreshold 0.2
+#define _arcNumThreshold 8
+#define _disScaleThreshold 0.5
 
 #define _windowsize 100
 
@@ -57,7 +59,7 @@ private:
   int64 PLANE_ID = 0;
 
 public:
-  Uint64Vector mCurvesId[_numofrings];
+  Uint64Vector mCurvesId[_numOfRings];
   PointXYZRGBNormalCloud* SearchCurves(PointXYZRGBNormalCloud& PointCloud);
   PointXYZRGBNormalCloud* Curce2Plane(PointXYZRGBNormalCloud& Curve, int64 ringID, Uint64Vector& curveid);
 
@@ -94,7 +96,7 @@ public:
   {
     float radius = -1;
 
-    float angle = (_upperBound - _lowerBound) * 1.0 / _numofrings * ID + _lowerBound;
+    float angle = (_upperBound - _lowerBound) * 1.0 / _numOfRings * ID + _lowerBound;
     if (angle < -1)
     {
       radius = _radiusRadio * fabs(tan(_lowerBound * 1.0 / 180 * M_PI)) * fabs(tan((90 + angle) * 1.0 / 180 * M_PI));
