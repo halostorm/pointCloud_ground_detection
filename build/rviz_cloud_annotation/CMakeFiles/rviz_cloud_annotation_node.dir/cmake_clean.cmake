@@ -9,7 +9,7 @@ file(REMOVE_RECURSE
   "CMakeFiles/rviz_cloud_annotation_node.dir/src/rviz_cloud_annotation_undo.cpp.o"
   "CMakeFiles/rviz_cloud_annotation_node.dir/src/point_neighborhood.cpp.o"
   "CMakeFiles/rviz_cloud_annotation_node.dir/src/point_neighborhood_search.cpp.o"
-  "CMakeFiles/rviz_cloud_annotation_node.dir/src/point_cloud_feature_plane.cpp.o"
+  "CMakeFiles/rviz_cloud_annotation_node.dir/src/point_cloud_plane_hf.cpp.o"
   "CMakeFiles/rviz_cloud_annotation_node.dir/src/point_cloud_plane_detect.cpp.o"
   "CMakeFiles/rviz_cloud_annotation_node.dir/pcl_include/colors.cpp.o"
   "CMakeFiles/rviz_cloud_annotation_node.dir/rviz_cloud_annotation_node_automoc.cpp.o"

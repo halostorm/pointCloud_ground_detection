@@ -37,8 +37,8 @@
 
 #define _radiusRadio 6.9
 #define _srcLenThreshold 0.2
-#define _arcNumThreshold 8
-#define _disScaleThreshold 0.5
+#define _arcNumThreshold 7
+#define _disScaleThreshold 0.8
 
 #define _windowsize 100
 
@@ -61,7 +61,8 @@ private:
 public:
   Uint64Vector mCurvesId[_numOfRings];
   PointXYZRGBNormalCloud* SearchCurves(PointXYZRGBNormalCloud& PointCloud);
-  PointXYZRGBNormalCloud* Curce2Plane(PointXYZRGBNormalCloud& Curve, int64 ringID, Uint64Vector& curveid);
+  PointXYZRGBNormalCloud CurveDensityFilter(PointXYZRGBNormalCloud& Curve, int64 ringID, Uint64Vector& curveid);
+  PointXYZRGBNormalCloud CurveSizeFilter(PointXYZRGBNormalCloud& Curve, int64 ringID, Uint64Vector& curveid);
 
   float InverseSqrt(float x)
   {
@@ -73,9 +74,9 @@ public:
     return x;
   }
 
-  float getVar(float x[])
+  float getVar(float x[], int len)
   {
-    int m = sizeof(x) / sizeof(x[0]);
+    int m = len;
     float sum = 0;
     for (int i = 0; i < m; i++)
     {  // 求和
@@ -91,17 +92,5 @@ public:
   }
 
   int64 GetScanringID(const float& angle);
-
-  float GetScanringRadius(int64 ID)
-  {
-    float radius = -1;
-
-    float angle = (_upperBound - _lowerBound) * 1.0 / _numOfRings * ID + _lowerBound;
-    if (angle < -1)
-    {
-      radius = _radiusRadio * fabs(tan(_lowerBound * 1.0 / 180 * M_PI)) * fabs(tan((90 + angle) * 1.0 / 180 * M_PI));
-    }
-    ROS_INFO("PointCloudPlaneDetect: angle: %f , radius of %d is: %f", angle, ID, radius);
-    return radius;
-  }
+  float GetScanringRadius(int64 ID);
 };

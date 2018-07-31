@@ -249,28 +249,28 @@ rviz_cloud_annotation/CMakeFiles/rviz_cloud_annotation_node.dir/src/point_neighb
 rviz_cloud_annotation/CMakeFiles/rviz_cloud_annotation_node.dir/src/point_neighborhood_search.cpp.o.provides.build: rviz_cloud_annotation/CMakeFiles/rviz_cloud_annotation_node.dir/src/point_neighborhood_search.cpp.o
 
 
-rviz_cloud_annotation/CMakeFiles/rviz_cloud_annotation_node.dir/src/point_cloud_feature_plane.cpp.o: rviz_cloud_annotation/CMakeFiles/rviz_cloud_annotation_node.dir/flags.make
-rviz_cloud_annotation/CMakeFiles/rviz_cloud_annotation_node.dir/src/point_cloud_feature_plane.cpp.o: /home/halo/WorkSpace/Columbus_Ground_Detection/src/rviz_cloud_annotation/src/point_cloud_feature_plane.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/halo/WorkSpace/Columbus_Ground_Detection/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object rviz_cloud_annotation/CMakeFiles/rviz_cloud_annotation_node.dir/src/point_cloud_feature_plane.cpp.o"
-	cd /home/halo/WorkSpace/Columbus_Ground_Detection/build/rviz_cloud_annotation && /usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/rviz_cloud_annotation_node.dir/src/point_cloud_feature_plane.cpp.o -c /home/halo/WorkSpace/Columbus_Ground_Detection/src/rviz_cloud_annotation/src/point_cloud_feature_plane.cpp
+rviz_cloud_annotation/CMakeFiles/rviz_cloud_annotation_node.dir/src/point_cloud_plane_hf.cpp.o: rviz_cloud_annotation/CMakeFiles/rviz_cloud_annotation_node.dir/flags.make
+rviz_cloud_annotation/CMakeFiles/rviz_cloud_annotation_node.dir/src/point_cloud_plane_hf.cpp.o: /home/halo/WorkSpace/Columbus_Ground_Detection/src/rviz_cloud_annotation/src/point_cloud_plane_hf.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/halo/WorkSpace/Columbus_Ground_Detection/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object rviz_cloud_annotation/CMakeFiles/rviz_cloud_annotation_node.dir/src/point_cloud_plane_hf.cpp.o"
+	cd /home/halo/WorkSpace/Columbus_Ground_Detection/build/rviz_cloud_annotation && /usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/rviz_cloud_annotation_node.dir/src/point_cloud_plane_hf.cpp.o -c /home/halo/WorkSpace/Columbus_Ground_Detection/src/rviz_cloud_annotation/src/point_cloud_plane_hf.cpp
 
-rviz_cloud_annotation/CMakeFiles/rviz_cloud_annotation_node.dir/src/point_cloud_feature_plane.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/rviz_cloud_annotation_node.dir/src/point_cloud_feature_plane.cpp.i"
-	cd /home/halo/WorkSpace/Columbus_Ground_Detection/build/rviz_cloud_annotation && /usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/halo/WorkSpace/Columbus_Ground_Detection/src/rviz_cloud_annotation/src/point_cloud_feature_plane.cpp > CMakeFiles/rviz_cloud_annotation_node.dir/src/point_cloud_feature_plane.cpp.i
+rviz_cloud_annotation/CMakeFiles/rviz_cloud_annotation_node.dir/src/point_cloud_plane_hf.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/rviz_cloud_annotation_node.dir/src/point_cloud_plane_hf.cpp.i"
+	cd /home/halo/WorkSpace/Columbus_Ground_Detection/build/rviz_cloud_annotation && /usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/halo/WorkSpace/Columbus_Ground_Detection/src/rviz_cloud_annotation/src/point_cloud_plane_hf.cpp > CMakeFiles/rviz_cloud_annotation_node.dir/src/point_cloud_plane_hf.cpp.i
 
-rviz_cloud_annotation/CMakeFiles/rviz_cloud_annotation_node.dir/src/point_cloud_feature_plane.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/rviz_cloud_annotation_node.dir/src/point_cloud_feature_plane.cpp.s"
-	cd /home/halo/WorkSpace/Columbus_Ground_Detection/build/rviz_cloud_annotation && /usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/halo/WorkSpace/Columbus_Ground_Detection/src/rviz_cloud_annotation/src/point_cloud_feature_plane.cpp -o CMakeFiles/rviz_cloud_annotation_node.dir/src/point_cloud_feature_plane.cpp.s
+rviz_cloud_annotation/CMakeFiles/rviz_cloud_annotation_node.dir/src/point_cloud_plane_hf.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/rviz_cloud_annotation_node.dir/src/point_cloud_plane_hf.cpp.s"
+	cd /home/halo/WorkSpace/Columbus_Ground_Detection/build/rviz_cloud_annotation && /usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/halo/WorkSpace/Columbus_Ground_Detection/src/rviz_cloud_annotation/src/point_cloud_plane_hf.cpp -o CMakeFiles/rviz_cloud_annotation_node.dir/src/point_cloud_plane_hf.cpp.s
 
-rviz_cloud_annotation/CMakeFiles/rviz_cloud_annotation_node.dir/src/point_cloud_feature_plane.cpp.o.requires:
+rviz_cloud_annotation/CMakeFiles/rviz_cloud_annotation_node.dir/src/point_cloud_plane_hf.cpp.o.requires:
 
-.PHONY : rviz_cloud_annotation/CMakeFiles/rviz_cloud_annotation_node.dir/src/point_cloud_feature_plane.cpp.o.requires
+.PHONY : rviz_cloud_annotation/CMakeFiles/rviz_cloud_annotation_node.dir/src/point_cloud_plane_hf.cpp.o.requires
 
-rviz_cloud_annotation/CMakeFiles/rviz_cloud_annotation_node.dir/src/point_cloud_feature_plane.cpp.o.provides: rviz_cloud_annotation/CMakeFiles/rviz_cloud_annotation_node.dir/src/point_cloud_feature_plane.cpp.o.requires
-	$(MAKE) -f rviz_cloud_annotation/CMakeFiles/rviz_cloud_annotation_node.dir/build.make rviz_cloud_annotation/CMakeFiles/rviz_cloud_annotation_node.dir/src/point_cloud_feature_plane.cpp.o.provides.build
-.PHONY : rviz_cloud_annotation/CMakeFiles/rviz_cloud_annotation_node.dir/src/point_cloud_feature_plane.cpp.o.provides
+rviz_cloud_annotation/CMakeFiles/rviz_cloud_annotation_node.dir/src/point_cloud_plane_hf.cpp.o.provides: rviz_cloud_annotation/CMakeFiles/rviz_cloud_annotation_node.dir/src/point_cloud_plane_hf.cpp.o.requires
+	$(MAKE) -f rviz_cloud_annotation/CMakeFiles/rviz_cloud_annotation_node.dir/build.make rviz_cloud_annotation/CMakeFiles/rviz_cloud_annotation_node.dir/src/point_cloud_plane_hf.cpp.o.provides.build
+.PHONY : rviz_cloud_annotation/CMakeFiles/rviz_cloud_annotation_node.dir/src/point_cloud_plane_hf.cpp.o.provides
 
-rviz_cloud_annotation/CMakeFiles/rviz_cloud_annotation_node.dir/src/point_cloud_feature_plane.cpp.o.provides.build: rviz_cloud_annotation/CMakeFiles/rviz_cloud_annotation_node.dir/src/point_cloud_feature_plane.cpp.o
+rviz_cloud_annotation/CMakeFiles/rviz_cloud_annotation_node.dir/src/point_cloud_plane_hf.cpp.o.provides.build: rviz_cloud_annotation/CMakeFiles/rviz_cloud_annotation_node.dir/src/point_cloud_plane_hf.cpp.o
 
 
 rviz_cloud_annotation/CMakeFiles/rviz_cloud_annotation_node.dir/src/point_cloud_plane_detect.cpp.o: rviz_cloud_annotation/CMakeFiles/rviz_cloud_annotation_node.dir/flags.make
@@ -355,7 +355,7 @@ rviz_cloud_annotation_node_OBJECTS = \
 "CMakeFiles/rviz_cloud_annotation_node.dir/src/rviz_cloud_annotation_undo.cpp.o" \
 "CMakeFiles/rviz_cloud_annotation_node.dir/src/point_neighborhood.cpp.o" \
 "CMakeFiles/rviz_cloud_annotation_node.dir/src/point_neighborhood_search.cpp.o" \
-"CMakeFiles/rviz_cloud_annotation_node.dir/src/point_cloud_feature_plane.cpp.o" \
+"CMakeFiles/rviz_cloud_annotation_node.dir/src/point_cloud_plane_hf.cpp.o" \
 "CMakeFiles/rviz_cloud_annotation_node.dir/src/point_cloud_plane_detect.cpp.o" \
 "CMakeFiles/rviz_cloud_annotation_node.dir/pcl_include/colors.cpp.o" \
 "CMakeFiles/rviz_cloud_annotation_node.dir/rviz_cloud_annotation_node_automoc.cpp.o"
@@ -371,7 +371,7 @@ rviz_cloud_annotation_node_EXTERNAL_OBJECTS =
 /home/halo/WorkSpace/Columbus_Ground_Detection/devel/lib/rviz_cloud_annotation/rviz_cloud_annotation_node: rviz_cloud_annotation/CMakeFiles/rviz_cloud_annotation_node.dir/src/rviz_cloud_annotation_undo.cpp.o
 /home/halo/WorkSpace/Columbus_Ground_Detection/devel/lib/rviz_cloud_annotation/rviz_cloud_annotation_node: rviz_cloud_annotation/CMakeFiles/rviz_cloud_annotation_node.dir/src/point_neighborhood.cpp.o
 /home/halo/WorkSpace/Columbus_Ground_Detection/devel/lib/rviz_cloud_annotation/rviz_cloud_annotation_node: rviz_cloud_annotation/CMakeFiles/rviz_cloud_annotation_node.dir/src/point_neighborhood_search.cpp.o
-/home/halo/WorkSpace/Columbus_Ground_Detection/devel/lib/rviz_cloud_annotation/rviz_cloud_annotation_node: rviz_cloud_annotation/CMakeFiles/rviz_cloud_annotation_node.dir/src/point_cloud_feature_plane.cpp.o
+/home/halo/WorkSpace/Columbus_Ground_Detection/devel/lib/rviz_cloud_annotation/rviz_cloud_annotation_node: rviz_cloud_annotation/CMakeFiles/rviz_cloud_annotation_node.dir/src/point_cloud_plane_hf.cpp.o
 /home/halo/WorkSpace/Columbus_Ground_Detection/devel/lib/rviz_cloud_annotation/rviz_cloud_annotation_node: rviz_cloud_annotation/CMakeFiles/rviz_cloud_annotation_node.dir/src/point_cloud_plane_detect.cpp.o
 /home/halo/WorkSpace/Columbus_Ground_Detection/devel/lib/rviz_cloud_annotation/rviz_cloud_annotation_node: rviz_cloud_annotation/CMakeFiles/rviz_cloud_annotation_node.dir/pcl_include/colors.cpp.o
 /home/halo/WorkSpace/Columbus_Ground_Detection/devel/lib/rviz_cloud_annotation/rviz_cloud_annotation_node: rviz_cloud_annotation/CMakeFiles/rviz_cloud_annotation_node.dir/rviz_cloud_annotation_node_automoc.cpp.o
@@ -778,7 +778,7 @@ rviz_cloud_annotation/CMakeFiles/rviz_cloud_annotation_node.dir/requires: rviz_c
 rviz_cloud_annotation/CMakeFiles/rviz_cloud_annotation_node.dir/requires: rviz_cloud_annotation/CMakeFiles/rviz_cloud_annotation_node.dir/src/rviz_cloud_annotation_undo.cpp.o.requires
 rviz_cloud_annotation/CMakeFiles/rviz_cloud_annotation_node.dir/requires: rviz_cloud_annotation/CMakeFiles/rviz_cloud_annotation_node.dir/src/point_neighborhood.cpp.o.requires
 rviz_cloud_annotation/CMakeFiles/rviz_cloud_annotation_node.dir/requires: rviz_cloud_annotation/CMakeFiles/rviz_cloud_annotation_node.dir/src/point_neighborhood_search.cpp.o.requires
-rviz_cloud_annotation/CMakeFiles/rviz_cloud_annotation_node.dir/requires: rviz_cloud_annotation/CMakeFiles/rviz_cloud_annotation_node.dir/src/point_cloud_feature_plane.cpp.o.requires
+rviz_cloud_annotation/CMakeFiles/rviz_cloud_annotation_node.dir/requires: rviz_cloud_annotation/CMakeFiles/rviz_cloud_annotation_node.dir/src/point_cloud_plane_hf.cpp.o.requires
 rviz_cloud_annotation/CMakeFiles/rviz_cloud_annotation_node.dir/requires: rviz_cloud_annotation/CMakeFiles/rviz_cloud_annotation_node.dir/src/point_cloud_plane_detect.cpp.o.requires
 rviz_cloud_annotation/CMakeFiles/rviz_cloud_annotation_node.dir/requires: rviz_cloud_annotation/CMakeFiles/rviz_cloud_annotation_node.dir/pcl_include/colors.cpp.o.requires
 rviz_cloud_annotation/CMakeFiles/rviz_cloud_annotation_node.dir/requires: rviz_cloud_annotation/CMakeFiles/rviz_cloud_annotation_node.dir/rviz_cloud_annotation_node_automoc.cpp.o.requires

@@ -1494,33 +1494,6 @@ rviz_cloud_annotation_plugin_automoc.cpp.s:
 	cd /home/halo/WorkSpace/Columbus_Ground_Detection/build && $(MAKE) -f rviz_cloud_annotation/CMakeFiles/rviz_cloud_annotation_plugin.dir/build.make rviz_cloud_annotation/CMakeFiles/rviz_cloud_annotation_plugin.dir/rviz_cloud_annotation_plugin_automoc.cpp.s
 .PHONY : rviz_cloud_annotation_plugin_automoc.cpp.s
 
-src/point_cloud_feature_plane.o: src/point_cloud_feature_plane.cpp.o
-
-.PHONY : src/point_cloud_feature_plane.o
-
-# target to build an object file
-src/point_cloud_feature_plane.cpp.o:
-	cd /home/halo/WorkSpace/Columbus_Ground_Detection/build && $(MAKE) -f rviz_cloud_annotation/CMakeFiles/rviz_cloud_annotation_node.dir/build.make rviz_cloud_annotation/CMakeFiles/rviz_cloud_annotation_node.dir/src/point_cloud_feature_plane.cpp.o
-.PHONY : src/point_cloud_feature_plane.cpp.o
-
-src/point_cloud_feature_plane.i: src/point_cloud_feature_plane.cpp.i
-
-.PHONY : src/point_cloud_feature_plane.i
-
-# target to preprocess a source file
-src/point_cloud_feature_plane.cpp.i:
-	cd /home/halo/WorkSpace/Columbus_Ground_Detection/build && $(MAKE) -f rviz_cloud_annotation/CMakeFiles/rviz_cloud_annotation_node.dir/build.make rviz_cloud_annotation/CMakeFiles/rviz_cloud_annotation_node.dir/src/point_cloud_feature_plane.cpp.i
-.PHONY : src/point_cloud_feature_plane.cpp.i
-
-src/point_cloud_feature_plane.s: src/point_cloud_feature_plane.cpp.s
-
-.PHONY : src/point_cloud_feature_plane.s
-
-# target to generate assembly for a file
-src/point_cloud_feature_plane.cpp.s:
-	cd /home/halo/WorkSpace/Columbus_Ground_Detection/build && $(MAKE) -f rviz_cloud_annotation/CMakeFiles/rviz_cloud_annotation_node.dir/build.make rviz_cloud_annotation/CMakeFiles/rviz_cloud_annotation_node.dir/src/point_cloud_feature_plane.cpp.s
-.PHONY : src/point_cloud_feature_plane.cpp.s
-
 src/point_cloud_plane_detect.o: src/point_cloud_plane_detect.cpp.o
 
 .PHONY : src/point_cloud_plane_detect.o
@@ -1547,6 +1520,33 @@ src/point_cloud_plane_detect.s: src/point_cloud_plane_detect.cpp.s
 src/point_cloud_plane_detect.cpp.s:
 	cd /home/halo/WorkSpace/Columbus_Ground_Detection/build && $(MAKE) -f rviz_cloud_annotation/CMakeFiles/rviz_cloud_annotation_node.dir/build.make rviz_cloud_annotation/CMakeFiles/rviz_cloud_annotation_node.dir/src/point_cloud_plane_detect.cpp.s
 .PHONY : src/point_cloud_plane_detect.cpp.s
+
+src/point_cloud_plane_hf.o: src/point_cloud_plane_hf.cpp.o
+
+.PHONY : src/point_cloud_plane_hf.o
+
+# target to build an object file
+src/point_cloud_plane_hf.cpp.o:
+	cd /home/halo/WorkSpace/Columbus_Ground_Detection/build && $(MAKE) -f rviz_cloud_annotation/CMakeFiles/rviz_cloud_annotation_node.dir/build.make rviz_cloud_annotation/CMakeFiles/rviz_cloud_annotation_node.dir/src/point_cloud_plane_hf.cpp.o
+.PHONY : src/point_cloud_plane_hf.cpp.o
+
+src/point_cloud_plane_hf.i: src/point_cloud_plane_hf.cpp.i
+
+.PHONY : src/point_cloud_plane_hf.i
+
+# target to preprocess a source file
+src/point_cloud_plane_hf.cpp.i:
+	cd /home/halo/WorkSpace/Columbus_Ground_Detection/build && $(MAKE) -f rviz_cloud_annotation/CMakeFiles/rviz_cloud_annotation_node.dir/build.make rviz_cloud_annotation/CMakeFiles/rviz_cloud_annotation_node.dir/src/point_cloud_plane_hf.cpp.i
+.PHONY : src/point_cloud_plane_hf.cpp.i
+
+src/point_cloud_plane_hf.s: src/point_cloud_plane_hf.cpp.s
+
+.PHONY : src/point_cloud_plane_hf.s
+
+# target to generate assembly for a file
+src/point_cloud_plane_hf.cpp.s:
+	cd /home/halo/WorkSpace/Columbus_Ground_Detection/build && $(MAKE) -f rviz_cloud_annotation/CMakeFiles/rviz_cloud_annotation_node.dir/build.make rviz_cloud_annotation/CMakeFiles/rviz_cloud_annotation_node.dir/src/point_cloud_plane_hf.cpp.s
+.PHONY : src/point_cloud_plane_hf.cpp.s
 
 src/point_neighborhood.o: src/point_neighborhood.cpp.o
 
@@ -1923,12 +1923,12 @@ help:
 	@echo "... rviz_cloud_annotation_plugin_automoc.o"
 	@echo "... rviz_cloud_annotation_plugin_automoc.i"
 	@echo "... rviz_cloud_annotation_plugin_automoc.s"
-	@echo "... src/point_cloud_feature_plane.o"
-	@echo "... src/point_cloud_feature_plane.i"
-	@echo "... src/point_cloud_feature_plane.s"
 	@echo "... src/point_cloud_plane_detect.o"
 	@echo "... src/point_cloud_plane_detect.i"
 	@echo "... src/point_cloud_plane_detect.s"
+	@echo "... src/point_cloud_plane_hf.o"
+	@echo "... src/point_cloud_plane_hf.i"
+	@echo "... src/point_cloud_plane_hf.s"
 	@echo "... src/point_neighborhood.o"
 	@echo "... src/point_neighborhood.i"
 	@echo "... src/point_neighborhood.s"

@@ -8,39 +8,38 @@ PointXYZRGBNormalCloud* PointCloudPlaneDetect::SearchCurves(PointXYZRGBNormalClo
   {
     PointXYZRGBNormal point = PointCloud[i];
     float angle = std::atan(point.z * InverseSqrt(point.x * point.x + point.y * point.y)) / (1.0f * M_PI) * 180.0f;
-    //ROS_INFO("PointCloudPlaneDetect: angle: %f", angle);
     int64 ringID = GetScanringID(angle);
-    //ROS_INFO("PointCloudPlaneDetect: ringID: %ld", ringID);
     if (ringID < _numOfRings && ringID >= 0)
     {
       curves[ringID].push_back(point);
       curveids[ringID].push_back(i);
     }
   }
-  //ROS_INFO("PointCloudPlaneDetect: OK1");
   for (int i = 0; i < _numOfRings; i++)
   {
-    //ROS_INFO("PointCloudPlaneDetect: curves[%d] size: %ld", i, curves[i].size());
     if (curves[i].size() > _windowsize)
     {
-      Curce2Plane(curves[i], i, curveids[i]);
+      PointXYZRGBNormalCloud filterCurve = CurveDensityFilter(curves[i], i, curveids[i]);
     }
-    ROS_INFO("PointCloudPlaneDetect: mCurvesId[%d] size: %ld", i, mCurvesId[i].size());
-    //ROS_INFO("PointCloudPlaneDetect: OK2");
+    // ROS_INFO("PointCloudPlaneDetect: mCurvesId[%d] size: %ld", i, mCurvesId[i].size());
   }
   return curves;
 }
 
-PointXYZRGBNormalCloud* PointCloudPlaneDetect::Curce2Plane(PointXYZRGBNormalCloud& Curve, int64 ringID,
-                                                           Uint64Vector& curveid)
+PointXYZRGBNormalCloud PointCloudPlaneDetect::CurveDensityFilter(PointXYZRGBNormalCloud& Curve, int64 ringID,
+                                                                 Uint64Vector& curveid)
 {
+  PointXYZRGBNormalCloud filterCurve;
   float radius = GetScanringRadius(ringID);
+  // ROS_INFO("PointCloudPlaneDetect: id: %ld, radius: %f", ringID, radius);
   if (radius < 0)
   {
-    return NULL;
+    return filterCurve;
   }
   float arcLen = 0;
   float disMean = 0;
+  float dis = radius;
+  float dis_1 = radius;
   int64 arcNum = 0;
   for (int i = 1; i < Curve.size(); i += 1)
   {
@@ -48,58 +47,69 @@ PointXYZRGBNormalCloud* PointCloudPlaneDetect::Curce2Plane(PointXYZRGBNormalClou
     float dy = Curve[i].y - Curve[i - 1].y;
     float dz = Curve[i].z - Curve[i - 1].z;
     arcNum++;
-    float dis = 1 / InverseSqrt(Curve[i].x * Curve[i].x + Curve[i].y * Curve[i].y + Curve[i].z * Curve[i].z);
+    dis = 1 / InverseSqrt(Curve[i].x * Curve[i].x + Curve[i].y * Curve[i].y);
     disMean += dis;
-    arcLen += (1 / InverseSqrt(dx * dx + dy * dy + dz * dz)) * (_radiusRadio / dis);
-
-    // ROS_INFO("PointCloudPlaneDetect: disMean: %f , radius: %f, arcNum: %d, arcLen: %f", disMean, radius, arcNum,
-    //         arcLen);
+    arcLen += (1 / InverseSqrt(dx * dx + dy * dy + dz * dz)) * (2 * _radiusRadio / (dis + dis_1));
+    dis_1 = dis;
     if (arcLen >= _srcLenThreshold)
     {
       disMean /= arcNum;
-      if(arcNum > _arcNumThreshold && disMean > _disScaleThreshold * radius)
+      if (ringID == 1)
+        ROS_INFO("PointCloudPlaneDetect: disMean: %f , radius: %f, arcNum: %ld, arcLen: %f", disMean, radius, arcNum,
+                 arcLen);
+      if (arcNum > _arcNumThreshold && disMean > _disScaleThreshold * radius)
       {
+        //记录选择的点
         for (int k = i - arcNum + 1; k <= i; k++)
         {
           mCurvesId[ringID].push_back(curveid[k]);
+          filterCurve.push_back(Curve[k]);
         }
       }
       arcLen = 0;
       arcNum = 0;
       disMean = 0;
     }
-    // float varDis = 0;
-    // float varZ = 0;
-    // float listDis[_windowsize];
-    // float listZ[_windowsize];
-    // for (int j = i; j < i + _windowsize; j++)
-    // {
-    //   listDis[j - i] = 1 / InverseSqrt(Curve[j].x * Curve[j].x + Curve[j].y * Curve[j].y);
-    //   listZ[j - i] = Curve[j].z;
-    // }
-    // varDis = getVar(listDis);
-    // varZ = getVar(listZ);
-    // if (varDis < 10E-8 && varZ < 10E-8)
-    // {
-    //   mCurvesId[ringID].push_back(curveid[i]);
-    // }
   }
+  return filterCurve;
 }
 
-// PointXYZRGBNormalCloud* PointCloudPlaneDetect::Curce2Plane(PointXYZRGBNormalCloud& Curve, int64 ringID,
-//                                                            Uint64Vector& curveid)
-// {
-//   for (int i = 0; i < Curve.size() - 1; i++)
-//   {
-
-//     mCurvesId[ringID].push_back(curveid[i]);
-//   }
-// }
+PointXYZRGBNormalCloud PointCloudPlaneDetect::CurveSizeFilter(PointXYZRGBNormalCloud& Curve, int64 ringID,
+                                                              Uint64Vector& curveid)
+{
+}
 
 int64 PointCloudPlaneDetect::GetScanringID(const float& angle)
 {
   return static_cast<int64>((angle - _lowerBound) / (1.0f * (_upperBound - _lowerBound)) * (_numOfRings - 1) + 0.5);
 }
+
+float PointCloudPlaneDetect::GetScanringRadius(int64 ID)
+{
+  float radius = -1;
+  float angle = (_upperBound - _lowerBound) * 1.0 / _numOfRings * ID + _lowerBound;
+  if (angle < -2)
+  {
+    radius = _radiusRadio * fabs(tan(_lowerBound * 1.0 / 180 * M_PI)) * fabs(tan((90 + angle) * 1.0 / 180 * M_PI));
+  }
+  // ROS_INFO("PointCloudPlaneDetect: angle: %f , radius of %ld is: %f", angle, ID, radius);
+  return radius;
+}
+// float varDis = 0;
+// float varZ = 0;
+// float listDis[_windowsize];
+// float listZ[_windowsize];
+// for (int j = i; j < i + _windowsize; j++)
+// {
+//   listDis[j - i] = 1 / InverseSqrt(Curve[j].x * Curve[j].x + Curve[j].y * Curve[j].y);
+//   listZ[j - i] = Curve[j].z;
+// }
+// varDis = getVar(listDis,_windowsize);
+// varZ = getVar(listZ,_windowsize);
+// if (varDis < 10E-8 && varZ < 10E-8)
+// {
+//   mCurvesId[ringID].push_back(curveid[i]);
+// }
 
 /*
 typedef complex<int> POINT;
