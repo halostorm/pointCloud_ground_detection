@@ -12,7 +12,7 @@
 #define LINENUMBER 10
 
 #define DISTANCE_LIMMIT 20
-#define HEIGHT_LIMMIT 2
+#define HEIGHT_LIMMIT 1.5
 
 #define _max(a, b) (((a) > (b)) ? (a) : (b))
 #define _min(a, b) (((a) > (b)) ? (b) : (a))

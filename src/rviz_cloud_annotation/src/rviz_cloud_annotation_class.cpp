@@ -360,18 +360,19 @@ void RVizCloudAnnotation::LoadCloud(const std::string &filename, const std::stri
   PointCloudPlaneDetect pcpd;
   clock_t start, finish;
   start = clock();
-
   pcpd.SearchCurves(cloud);
   for (int i = 0; i < 16; i++)
   {
-    curveid[i].clear();
-    curveid[i].insert(curveid[i].end(), pcpd.mCurvesId[i].begin(), pcpd.mCurvesId[i].end());
-    // curveid[i] =  pcpd.mCurvesId[i];
-    ROS_INFO("rviz_cloud_annotation: curves[%d] size: %ld", i, curveid[i].size());
+    mCurveId[i].clear();
+    //mCurveId[i].insert(mCurveId[i].end(), pcpd.mCommonFilterCurvesId[i].begin(), pcpd.mCommonFilterCurvesId[i].end());
+     //mCurveId[i].insert(mCurveId[i].end(), pcpd.mDensityCurvesId[i].begin(), pcpd.mDensityCurvesId[i].end());
+     mCurveId[i].insert(mCurveId[i].end(), pcpd.mSizeCurvesId[i].begin(), pcpd.mSizeCurvesId[i].end());
+     //mCurveId[i].insert(mCurveId[i].end(), pcpd.mRadiusCurvesId[i].begin(), pcpd.mRadiusCurvesId[i].end());
   }
   finish = clock();
-  float deltTime = (finish - start) / CLOCKS_PER_SEC;
-  ROS_INFO("rviz_cloud_annotation: cost time: %f (s)", deltTime);
+  float deltTime = (finish - start);
+  deltTime /= CLOCKS_PER_SEC;
+  ROS_INFO("rviz_cloud_annotation: cost time: %f (ms)", deltTime*1000);
 }
 
 void RVizCloudAnnotation::colorize_point_cloud(double intensity, PointXYZRGB *sample)
@@ -440,19 +441,21 @@ void RVizCloudAnnotation::Save(const bool is_autosave)
 {
   if (m_edit_mode == EDIT_MODE_CONTROL_POINT && idtest < 16)
   {
-    const Uint64Vector changed_labels = m_undo_redo.SetControlPointVector(curveid[idtest], 0, m_current_label + idtest);
+    const Uint64Vector changed_labels =
+        m_undo_redo.SetControlPointVector(mCurveId[idtest], 0, m_current_label + idtest);
     SendControlPointsMarker(changed_labels, true);
     SendPointCounts(changed_labels);
     SendUndoRedoState();
+
     PointXYZRGBLCloud cloudk;
     pcl::copyPointCloud(*m_cloud, cloudk);
-  
+
     std::string filenamek = std::string("/home/halo/1.txt");
-    std::ofstream ofilek(filenamek.c_str(),std::ios::app);
-    for (int j = 0; j < curveid[idtest].size(); j++)
+    std::ofstream ofilek(filenamek.c_str(), std::ios::app);
+    for (int j = 0; j < mCurveId[idtest].size(); j++)
     {
-      ofilek << cloudk[curveid[idtest][j]].x << "\t" << cloudk[curveid[idtest][j]].y << "\t"
-             << cloudk[curveid[idtest][j]].z << "\n";
+      ofilek << cloudk[mCurveId[idtest][j]].x << "\t" << cloudk[mCurveId[idtest][j]].y << "\t"
+             << cloudk[mCurveId[idtest][j]].z << "\n";
     }
     idtest++;
   }

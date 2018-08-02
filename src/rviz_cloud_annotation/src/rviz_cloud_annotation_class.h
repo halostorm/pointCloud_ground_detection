@@ -648,7 +648,7 @@ public:
     return 1 / x;
   }
 
-  Uint64Vector curveid[16];
+  Uint64Vector mCurveId[16];
   int idtest = 0;
 };
 

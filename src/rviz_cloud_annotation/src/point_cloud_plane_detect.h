@@ -34,13 +34,20 @@
 #define _lowerBound -15
 #define _upperBound 15
 #define _numOfRings 16
+#define _horizontalAngleResolution 0.4
+#define _lastRings 5
 
 #define _radiusRadio 6.9
 #define _srcLenThreshold 0.2
 #define _arcNumThreshold 7
-#define _disScaleThreshold 0.8
+#define _radiusScaleThreshold 0.8
+#define _breakingDistanceThreshold 0.2
+#define _breakingSizeThreshold 30
+#define _numOfAngleGrid 900  // 360/0.4
+#define _windowsize 50
 
-#define _windowsize 100
+#define _max(a, b) (((a) > (b)) ? (a) : (b))
+#define _min(a, b) (((a) > (b)) ? (b) : (a))
 
 typedef int64_t int64;
 typedef uint64_t uint64;
@@ -55,14 +62,28 @@ class PointCloudPlaneDetect
 {
 private:
   PointXYZRGBNormalCloud* mPlaneVector;
-  PointXYZRGBNormalCloud* mCurvesVector;
+  PointXYZRGBNormalCloud mCurvesVector[_numOfRings];
+  PointXYZRGBNormalCloud mDensityCurvesVector[_numOfRings];
+  PointXYZRGBNormalCloud mRadiusCurvesVector[_numOfRings];
+  PointXYZRGBNormalCloud mSizeCurvesVector[_numOfRings];
   int64 PLANE_ID = 0;
 
 public:
   Uint64Vector mCurvesId[_numOfRings];
-  PointXYZRGBNormalCloud* SearchCurves(PointXYZRGBNormalCloud& PointCloud);
-  PointXYZRGBNormalCloud CurveDensityFilter(PointXYZRGBNormalCloud& Curve, int64 ringID, Uint64Vector& curveid);
-  PointXYZRGBNormalCloud CurveSizeFilter(PointXYZRGBNormalCloud& Curve, int64 ringID, Uint64Vector& curveid);
+  Uint64Vector mDensityCurvesId[_numOfRings];
+  Uint64Vector mSizeCurvesId[_numOfRings];
+  Uint64Vector mRadiusCurvesId[_numOfRings];
+  Uint64Vector mAnglePointId[_numOfRings][_numOfAngleGrid];
+  PointXYZRGBNormalCloud mAnglePointVector[_numOfRings][_numOfAngleGrid];
+  float mAngleMean[_numOfRings][_numOfAngleGrid] = { { 0 } };
+  Uint64Vector mCommonFilterCurvesId[_numOfRings];
+  float mHeightMean[_numOfRings];
+  float mScanringRadius[_numOfRings];
+  PointXYZRGBNormalCloud* SearchCurves(const PointXYZRGBNormalCloud& PointCloud);
+  PointXYZRGBNormalCloud CurveDensityFilter(const PointXYZRGBNormalCloud& Curve, int64 ringID, Uint64Vector& curveId);
+  PointXYZRGBNormalCloud CurveSizeFilter(const PointXYZRGBNormalCloud& Curve, int64 ringID, Uint64Vector& curveId);
+
+  PointXYZRGBNormalCloud* CurvesRadiusFilter(const PointXYZRGBNormalCloud* CurvesVector, Uint64Vector* CurvesId);
 
   float InverseSqrt(float x)
   {
@@ -92,5 +113,5 @@ public:
   }
 
   int64 GetScanringID(const float& angle);
-  float GetScanringRadius(int64 ID);
+  float GetScanringRadius(const int64 ID);
 };
