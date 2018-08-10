@@ -10,7 +10,7 @@
 #include "rviz_cloud_annotation_undo.h"
 #include "point_cloud_plane_hf.h"
 #include "point_neighborhood_search.h"
-#include "point_cloud_plane_detect.h"
+#include "point_cloud_plane_curves_extract.h"
 
 #include <sys/stat.h>
 #include <sys/types.h>
@@ -54,7 +54,7 @@
 #define KEYDOWN(vk_code) ((GetAsyncKeyState(vk_code) & 0x8000) ? 1 : 0)
 #define KEYUP(vk_code) ((GetAsyncKeyState(vk_code) & 0x8000) ? 0 : 1)
 
-class RVizCloudAnnotation  //点云标注Main类
+class RVizCloudAnnotation //点云标注Main类
 {
 public:
   typedef visualization_msgs::InteractiveMarker InteractiveMarker;
@@ -460,7 +460,7 @@ private:
 
   int PLANE_ID = 0;
 
-  float m_box_bias[BBOXNUMBER_LINEPOINTNUMBER][6] = { { 0 } };
+  float m_box_bias[BBOXNUMBER_LINEPOINTNUMBER][6] = {{0}};
 
   float BBOX_YAW = 0;
 
@@ -480,19 +480,19 @@ private:
 
   Uint64Vector ids_in_plane_flag;
 
-  float BBOX_SET[BBOXNUMBER_LINEPOINTNUMBER][11] = { { 0 } };
+  float BBOX_SET[BBOXNUMBER_LINEPOINTNUMBER][11] = {{0}};
 
-  float BBOX_LABEL_SET[BBOXNUMBER_LINEPOINTNUMBER][10] = { { 0 } };
+  float BBOX_LABEL_SET[BBOXNUMBER_LINEPOINTNUMBER][10] = {{0}};
 
-  float KERB_SET[LINENUMBER][BBOXNUMBER_LINEPOINTNUMBER][3] = { { { 0 } } };
+  float KERB_SET[LINENUMBER][BBOXNUMBER_LINEPOINTNUMBER][3] = {{{0}}};
 
-  int KERB_SIZE[LINENUMBER] = { 0 };
+  int KERB_SIZE[LINENUMBER] = {0};
 
-  float LANE_SET[LINENUMBER][BBOXNUMBER_LINEPOINTNUMBER][3] = { { { 0 } } };
+  float LANE_SET[LINENUMBER][BBOXNUMBER_LINEPOINTNUMBER][3] = {{{0}}};
 
-  int LANE_SIZE[LINENUMBER] = { 0 };
+  int LANE_SIZE[LINENUMBER] = {0};
 
-  float m_bbox_occluded[BBOXNUMBER_LINEPOINTNUMBER] = { 0 };
+  float m_bbox_occluded[BBOXNUMBER_LINEPOINTNUMBER] = {0};
 
   Int64Vector m_label;
 
@@ -636,7 +636,7 @@ public:
   {
     std::stringstream stream;
     stream << int_temp;
-    string_temp = stream.str();  //此处也可以用 stream>>string_temp
+    string_temp = stream.str(); //此处也可以用 stream>>string_temp
   }
   float m_sqrt(float x)
   {
@@ -652,4 +652,4 @@ public:
   int idtest = 0;
 };
 
-#endif  // RVIZ_CLOUD_ANNOTATION_CLASS_H
+#endif // RVIZ_CLOUD_ANNOTATION_CLASS_H

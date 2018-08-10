@@ -25,33 +25,33 @@ RVizCloudAnnotation::RVizCloudAnnotation(ros::NodeHandle &nh1) : m_nh(nh1)
   std::string param_stringF;
   std::string param_stringO;
 
-  m_nh.param<std::string>(PARAM_NAME_NORMAL_SOURCE, param_string2, PARAM_DEFAULT_NORMAL_SOURCE);  // 点云类型
+  m_nh.param<std::string>(PARAM_NAME_NORMAL_SOURCE, param_string2, PARAM_DEFAULT_NORMAL_SOURCE); // 点云类型
 
-  m_nh.param<std::string>(DATASET_FOLDER, param_stringA, DATASET_FOLDER_DEFAULT);  // 加载点云文件名
+  m_nh.param<std::string>(DATASET_FOLDER, param_stringA, DATASET_FOLDER_DEFAULT); // 加载点云文件名
 
   m_dataset_folder = param_stringA;
 
-  m_nh.param<std::string>(ANNOTATION_CLOUD_FOLDER, param_stringB, ANNOTATION_CLOUD_FOLDER_DEFAULT);  // 加载点云文件名
+  m_nh.param<std::string>(ANNOTATION_CLOUD_FOLDER, param_stringB, ANNOTATION_CLOUD_FOLDER_DEFAULT); // 加载点云文件名
 
   m_annotation_cloud_folder = param_stringB;
 
-  m_nh.param<std::string>(ANNOTATION_FILE_FOLDER, param_stringC, ANNOTATION_FILE_FOLDER_DEFAULT);  // 加载点云文件名
+  m_nh.param<std::string>(ANNOTATION_FILE_FOLDER, param_stringC, ANNOTATION_FILE_FOLDER_DEFAULT); // 加载点云文件名
 
   m_annotation_file_folder = param_stringC;
 
-  m_nh.param<std::string>(BBOX_NAME_FOLDER, param_stringD, BBOX_NAME_FOLDER_DEFAULT);  // 加载点云文件名
+  m_nh.param<std::string>(BBOX_NAME_FOLDER, param_stringD, BBOX_NAME_FOLDER_DEFAULT); // 加载点云文件名
 
   m_bbox_folder = param_stringD;
 
-  m_nh.param<std::string>(LABEL_NAME_FOLDER, param_stringE, LABEL_NAME_FOLDER_DEFAULT);  // 加载点云文件名
+  m_nh.param<std::string>(LABEL_NAME_FOLDER, param_stringE, LABEL_NAME_FOLDER_DEFAULT); // 加载点云文件名
 
   m_label_folder = param_stringE;
 
-  m_nh.param<std::string>(LINE_NAME_FOLDER, param_stringF, LINE_NAME_FOLDER_DEFAULT);  // 加载点云文件名
+  m_nh.param<std::string>(LINE_NAME_FOLDER, param_stringF, LINE_NAME_FOLDER_DEFAULT); // 加载点云文件名
 
   m_line_folder = param_stringF;
 
-  m_nh.param<std::string>(LOG_FILE, param_stringO, LOG_FILE_DEFAULT);  // 加载点云文件名
+  m_nh.param<std::string>(LOG_FILE, param_stringO, LOG_FILE_DEFAULT); // 加载点云文件名
 
   m_log_file = param_stringO;
   // ROS_INFO("rviz_cloud_annotation: log file: %s", m_log_file.c_str());
@@ -88,11 +88,7 @@ RVizCloudAnnotation::InteractiveMarker RVizCloudAnnotation::ControlPointsToMarke
                            m_control_points_visual == CONTROL_POINT_VISUAL_THREE_SPHERES;
 
   const float control_label_size = use_spheres ? m_control_label_size / 2.0 : m_control_label_size;
-  const uint64 cp_marker_count = m_control_points_visual == CONTROL_POINT_VISUAL_SPHERE ?
-                                     1 :
-                                     m_control_points_visual == CONTROL_POINT_VISUAL_THREE_SPHERES ?
-                                     3 :
-                                     m_control_points_visual == CONTROL_POINT_VISUAL_LINE ? 2 : 2;
+  const uint64 cp_marker_count = m_control_points_visual == CONTROL_POINT_VISUAL_SPHERE ? 1 : m_control_points_visual == CONTROL_POINT_VISUAL_THREE_SPHERES ? 3 : m_control_points_visual == CONTROL_POINT_VISUAL_LINE ? 2 : 2;
 
   Marker cloud_marker;
   cloud_marker.type = use_spheres ? int(Marker::SPHERE_LIST) : int(Marker::LINE_LIST);
@@ -142,8 +138,7 @@ RVizCloudAnnotation::InteractiveMarker RVizCloudAnnotation::ControlPointsToMarke
 
   visualization_msgs::InteractiveMarkerControl points_control;
   points_control.always_visible = true;
-  points_control.interaction_mode = interactive ? int32(visualization_msgs::InteractiveMarkerControl::BUTTON) :
-                                                  int32(visualization_msgs::InteractiveMarkerControl::NONE);
+  points_control.interaction_mode = interactive ? int32(visualization_msgs::InteractiveMarkerControl::BUTTON) : int32(visualization_msgs::InteractiveMarkerControl::NONE);
   if (m_view_control_points)
     points_control.markers.push_back(cloud_marker);
   marker.controls.push_back(points_control);
@@ -207,7 +202,7 @@ RVizCloudAnnotation::InteractiveMarker RVizCloudAnnotation::LabelsToMarker(const
     {
       const PointXYZRGBNormal &pt = cloud[labels[i]];
 
-      cloud_marker.points[labels_size + i].x = pt.x - pt.normal_x * normal_mult;  // point on the back
+      cloud_marker.points[labels_size + i].x = pt.x - pt.normal_x * normal_mult; // point on the back
       cloud_marker.points[labels_size + i].y = pt.y - pt.normal_y * normal_mult;
       cloud_marker.points[labels_size + i].z = pt.z - pt.normal_z * normal_mult;
     }
@@ -215,8 +210,7 @@ RVizCloudAnnotation::InteractiveMarker RVizCloudAnnotation::LabelsToMarker(const
 
   visualization_msgs::InteractiveMarkerControl points_control;
   points_control.always_visible = true;
-  points_control.interaction_mode = interactive ? int32(visualization_msgs::InteractiveMarkerControl::BUTTON) :
-                                                  int32(visualization_msgs::InteractiveMarkerControl::NONE);
+  points_control.interaction_mode = interactive ? int32(visualization_msgs::InteractiveMarkerControl::BUTTON) : int32(visualization_msgs::InteractiveMarkerControl::NONE);
   if (m_view_labels && (!m_view_cloud || label != 0))
     points_control.markers.push_back(cloud_marker);
   marker.controls.push_back(points_control);
@@ -269,8 +263,7 @@ RVizCloudAnnotation::InteractiveMarker RVizCloudAnnotation::CloudToMarker(const 
 
   visualization_msgs::InteractiveMarkerControl points_control;
   points_control.always_visible = true;
-  points_control.interaction_mode = interactive ? int32(visualization_msgs::InteractiveMarkerControl::BUTTON) :
-                                                  int32(visualization_msgs::InteractiveMarkerControl::NONE);
+  points_control.interaction_mode = interactive ? int32(visualization_msgs::InteractiveMarkerControl::BUTTON) : int32(visualization_msgs::InteractiveMarkerControl::NONE);
   if (m_view_cloud)
     points_control.markers.push_back(cloud_marker);
   marker.controls.push_back(points_control);
@@ -357,22 +350,22 @@ void RVizCloudAnnotation::LoadCloud(const std::string &filename, const std::stri
     ids_in_plane_flag.push_back(0);
   }
 
-  PointCloudPlaneDetect pcpd;
+  PointCloudPlaneCurvesExtract pcpd;
   clock_t start, finish;
   start = clock();
   pcpd.SearchCurves(cloud);
   for (int i = 0; i < 16; i++)
   {
     mCurveId[i].clear();
-    //mCurveId[i].insert(mCurveId[i].end(), pcpd.mCommonFilterCurvesId[i].begin(), pcpd.mCommonFilterCurvesId[i].end());
-     //mCurveId[i].insert(mCurveId[i].end(), pcpd.mDensityCurvesId[i].begin(), pcpd.mDensityCurvesId[i].end());
-     mCurveId[i].insert(mCurveId[i].end(), pcpd.mSizeCurvesId[i].begin(), pcpd.mSizeCurvesId[i].end());
-     //mCurveId[i].insert(mCurveId[i].end(), pcpd.mRadiusCurvesId[i].begin(), pcpd.mRadiusCurvesId[i].end());
+    // mCurveId[i].insert(mCurveId[i].end(), pcpd.mCurvesId[i].begin(), pcpd.mCurvesId[i].end());
+    //mCurveId[i].insert(mCurveId[i].end(), pcpd.mDensityCurvesId[i].begin(), pcpd.mDensityCurvesId[i].end());
+    mCurveId[i].insert(mCurveId[i].end(), pcpd.mSizeCurvesId[i].begin(), pcpd.mSizeCurvesId[i].end());
+    //mCurveId[i].insert(mCurveId[i].end(), pcpd.mRadiusCurvesId[i].begin(), pcpd.mRadiusCurvesId[i].end());
   }
   finish = clock();
   float deltTime = (finish - start);
   deltTime /= CLOCKS_PER_SEC;
-  ROS_INFO("rviz_cloud_annotation: cost time: %f (ms)", deltTime*1000);
+  ROS_INFO("rviz_cloud_annotation: cost time: %f (ms)", deltTime * 1000);
 }
 
 void RVizCloudAnnotation::colorize_point_cloud(double intensity, PointXYZRGB *sample)
@@ -383,10 +376,10 @@ void RVizCloudAnnotation::colorize_point_cloud(double intensity, PointXYZRGB *sa
   }
   intensity = intensity * 255;
   int r, g, b;
-  double intensity_range = 255;  // any intensity value above this value will be red
+  double intensity_range = 255; // any intensity value above this value will be red
   double wavelength;
   double min_wavelength =
-      470;  // used to discard overtly blue and purple points that are invisible due to the black background
+      470; // used to discard overtly blue and purple points that are invisible due to the black background
   if (intensity <= intensity_range)
     wavelength = intensity / intensity_range * (780 - min_wavelength) + min_wavelength;
   else
@@ -484,7 +477,7 @@ void RVizCloudAnnotation::Save(const bool is_autosave)
 
     try
     {
-      m_annotation->Serialize(ofile);  //输出序列化
+      m_annotation->Serialize(ofile); //输出序列化
     }
     catch (const RVizCloudAnnotationPoints::IOE &e)
     {
@@ -594,18 +587,18 @@ std::string RVizCloudAnnotation::label2Name(int label)
 
   switch (m_label_)
   {
-    case 0:
-      m_str_ = "Car";
-      break;
-    case 1:
-      m_str_ = "Cart";
-      break;
-    case 2:
-      m_str_ = "Pedestrian";
-      break;
-    case 3:
-      m_str_ = "Cyclist";
-      break;
+  case 0:
+    m_str_ = "Car";
+    break;
+  case 1:
+    m_str_ = "Cart";
+    break;
+  case 2:
+    m_str_ = "Pedestrian";
+    break;
+  case 3:
+    m_str_ = "Cyclist";
+    break;
   }
   return m_str_;
 }
@@ -613,42 +606,42 @@ std::string RVizCloudAnnotation::label2Name(int label)
 void RVizCloudAnnotation::SetEditMode(const uint64 new_edit_mode)
 {
   if (m_edit_mode == new_edit_mode)
-    return;  // nothing to do
+    return; // nothing to do
 
   const char *info_string;
 
   bool send_cloud = false;
   switch (new_edit_mode)
   {
-    case EDIT_MODE_NONE:
-      if (m_edit_mode != EDIT_MODE_NONE)
-        send_cloud = true;
-      info_string = "NONE";
-      break;
-    case EDIT_MODE_CONTROL_POINT:
-      if (m_edit_mode == EDIT_MODE_NONE)
-        send_cloud = true;
-      info_string = "CONTROL_POINT";
-      break;
-    case EDIT_MODE_ERASER:
-      if (m_edit_mode == EDIT_MODE_NONE)
-        send_cloud = true;
-      info_string = "ERASER";
-      break;
-    case EDIT_MODE_COLOR_PICKER:
-      if (m_edit_mode == EDIT_MODE_NONE)
-        send_cloud = true;
-      info_string = "COLOR_PICKER";
-      break;
-    default:
-      ROS_ERROR("rviz_cloud_annotation: unsupported edit mode %u received.", (unsigned int)(new_edit_mode));
-      return;  // invalid
+  case EDIT_MODE_NONE:
+    if (m_edit_mode != EDIT_MODE_NONE)
+      send_cloud = true;
+    info_string = "NONE";
+    break;
+  case EDIT_MODE_CONTROL_POINT:
+    if (m_edit_mode == EDIT_MODE_NONE)
+      send_cloud = true;
+    info_string = "CONTROL_POINT";
+    break;
+  case EDIT_MODE_ERASER:
+    if (m_edit_mode == EDIT_MODE_NONE)
+      send_cloud = true;
+    info_string = "ERASER";
+    break;
+  case EDIT_MODE_COLOR_PICKER:
+    if (m_edit_mode == EDIT_MODE_NONE)
+      send_cloud = true;
+    info_string = "COLOR_PICKER";
+    break;
+  default:
+    ROS_ERROR("rviz_cloud_annotation: unsupported edit mode %u received.", (unsigned int)(new_edit_mode));
+    return; // invalid
   }
 
   ROS_INFO("rviz_cloud_annotation: edit mode is now: %s", info_string);
 
   if ((m_edit_mode == EDIT_MODE_NONE) || (new_edit_mode == EDIT_MODE_NONE))
-    m_prev_edit_mode = m_edit_mode;  // there must be at least one EDIT_MODE_NONE between current and prev
+    m_prev_edit_mode = m_edit_mode; // there must be at least one EDIT_MODE_NONE between current and prev
   m_edit_mode = new_edit_mode;
 
   std_msgs::UInt32 msg;
@@ -702,7 +695,7 @@ std::string RVizCloudAnnotation::GetClickType(const std::string &marker_name, ui
 }
 
 RVizCloudAnnotation::uint64 RVizCloudAnnotation::GetClickedPointId(const InteractiveMarkerFeedback &click_feedback,
-                                                                   bool &ok)  //处理单选的点
+                                                                   bool &ok) //处理单选的点
 {
   if (true)
   {
@@ -851,7 +844,7 @@ void RVizCloudAnnotation::onClear(const std_msgs::UInt32 &label_msg)
   if (clear_label >= old_max_label)
     return;
 
-  if (clear_label != 0)  // Current Label
+  if (clear_label != 0) // Current Label
   {
     const Uint64Vector changed = m_undo_redo.ClearLabel(clear_label);
     SendControlPointsMarker(changed, true);
@@ -907,7 +900,7 @@ void RVizCloudAnnotation::onClear(const std_msgs::UInt32 &label_msg)
 
   for (int i = 0; i <= BBOX_ID; i++)
   {
-    if (BBOX_SET[i][10] > 1)  // >1 则不为空BBOX
+    if (BBOX_SET[i][10] > 1) // >1 则不为空BBOX
     {
       EmptyBboxToMarker(i);
     }
@@ -1019,7 +1012,7 @@ void RVizCloudAnnotation::onNew(const std_msgs::UInt32 &label_msg)
   //清除旧Markers
   for (int i = 0; i <= BBOX_ID; i++)
   {
-    if (BBOX_SET[i][10] > 1)  // >1 则不为空BBOX
+    if (BBOX_SET[i][10] > 1) // >1 则不为空BBOX
     {
       EmptyBboxToMarker(i);
       ROS_INFO("rviz_cloud_annotation: Delete BBOX ID: %i", i);
@@ -1141,23 +1134,23 @@ void RVizCloudAnnotation::onPointSizeChange(const std_msgs::Int32 &msg)
 {
   switch (msg.data)
   {
-    case POINT_SIZE_CHANGE_BIGGER:
-      if (m_point_size_multiplier > 1e5)
-        return;
-      m_point_size_multiplier *= (1.0 + m_point_size_change_multiplier);
-      break;
-    case POINT_SIZE_CHANGE_SMALLER:
-      if (m_point_size_multiplier < 1e-5)
-        return;
-      m_point_size_multiplier /= (1.0 + m_point_size_change_multiplier);
-      break;
-    case POINT_SIZE_CHANGE_RESET:
-      if (m_point_size_multiplier == 1.0)
-        return;
-      m_point_size_multiplier = 1.0;
-      break;
-    default:
+  case POINT_SIZE_CHANGE_BIGGER:
+    if (m_point_size_multiplier > 1e5)
       return;
+    m_point_size_multiplier *= (1.0 + m_point_size_change_multiplier);
+    break;
+  case POINT_SIZE_CHANGE_SMALLER:
+    if (m_point_size_multiplier < 1e-5)
+      return;
+    m_point_size_multiplier /= (1.0 + m_point_size_change_multiplier);
+    break;
+  case POINT_SIZE_CHANGE_RESET:
+    if (m_point_size_multiplier == 1.0)
+      return;
+    m_point_size_multiplier = 1.0;
+    break;
+  default:
+    return;
   }
 
   ROS_INFO("rviz_cloud_annotation: point size multiplier is now: %f", float(m_point_size_multiplier));
@@ -1251,7 +1244,7 @@ void RVizCloudAnnotation::SendControlPointsMarker(const Uint64Vector &changed_la
     m_interactive_marker_server->applyChanges();
 }
 
-void RVizCloudAnnotation::onClickOnCloud(const InteractiveMarkerFeedbackConstPtr &feedback_ptr)  //点选并处理
+void RVizCloudAnnotation::onClickOnCloud(const InteractiveMarkerFeedbackConstPtr &feedback_ptr) //点选并处理
 {
   if (m_edit_mode == EDIT_MODE_NONE)
   {
@@ -1263,12 +1256,12 @@ void RVizCloudAnnotation::onClickOnCloud(const InteractiveMarkerFeedbackConstPtr
   uint8 type = feedback.event_type;
 
   if (type != InteractiveMarkerFeedback::BUTTON_CLICK)
-    return;  // not a click
+    return; // not a click
 
   ROS_INFO("rviz_cloud_annotation: click event (marker: %s).", feedback_ptr->marker_name.c_str());
 
   if (!feedback.mouse_point_valid)
-    return;  // invalid point
+    return; // invalid point
 
   bool ok;
   const uint64 idx = GetClickedPointId(feedback, ok);
@@ -1416,8 +1409,8 @@ void RVizCloudAnnotation::onRectangleSelectionViewport(const rviz_cloud_annotati
 
   Eigen::Affine3f scale_matrix = Eigen::Affine3f::Identity();
   scale_matrix(0, 0) = viewport_width / 2.0;
-  scale_matrix(1, 1) = viewport_height / -2.0;  // y axis must be inverted
-  scale_matrix(1, 3) = viewport_height;         // y is now negative, so move back to positive
+  scale_matrix(1, 1) = viewport_height / -2.0; // y axis must be inverted
+  scale_matrix(1, 3) = viewport_height;        // y is now negative, so move back to positive
 
   Eigen::Affine3f translation_matrix = Eigen::Affine3f::Identity();
   translation_matrix.translation().x() = 1.0;
@@ -1459,7 +1452,7 @@ RVizCloudAnnotation::int32 RVizCloudAnnotation::Int32PolyTriangle::Contains(cons
     const uint64 i2 = (i + 2) % 3;
     const Eigen::Vector2i normal = Eigen::Vector2i(-y[i1] + y[i], x[i1] - x[i]);
     if (normal == Eigen::Vector2i::Zero())
-      return 1;  // degenerate
+      return 1; // degenerate
 
     const int32 dot1 = Eigen::Vector2i(x[i2] - x[i], y[i2] - y[i]).dot(normal);
     if (i == 0)
@@ -1467,21 +1460,21 @@ RVizCloudAnnotation::int32 RVizCloudAnnotation::Int32PolyTriangle::Contains(cons
 
     const int32 dotp1 = Eigen::Vector2i(px - x[i], py - y[i]).dot(normal);
     if (!dot1)
-      return 1;  // degenerate
+      return 1; // degenerate
     if (!dotp1)
     {
       if (i != 1 && (clockwise == (i == 0)))
-        return 1;  // point on first edge is outside
+        return 1; // point on first edge is outside
     }
 
     if ((dotp1 > 0) != (dot1 > 0))
-      return 1;  // outside the triangle
+      return 1; // outside the triangle
   }
 
   return -1;
 }
 
-RVizCloudAnnotation::Uint64Vector RVizCloudAnnotation::RectangleSelectionToIds(  //统计选中的点
+RVizCloudAnnotation::Uint64Vector RVizCloudAnnotation::RectangleSelectionToIds( //统计选中的点
     const Eigen::Matrix4f prod_matrix, const Eigen::Affine3f camera_pose_inv, const PointXYZRGBNormalCloud &cloud,
     const uint32 start_x, const uint32 start_y, const uint32 width, const uint32 height,
     const Int32PolyTriangleVector tri_cond, const float point_size, const float focal_length,
@@ -1490,7 +1483,7 @@ RVizCloudAnnotation::Uint64Vector RVizCloudAnnotation::RectangleSelectionToIds( 
   Uint64Vector virtual_id_image(width * height, 0);
   FloatVector virtual_depth_image(width * height, 0.0);
 
-  BoolVector virtual_image_mask(width * height, tri_cond.empty());  // if empty, all is true
+  BoolVector virtual_image_mask(width * height, tri_cond.empty()); // if empty, all is true
   if (!tri_cond.empty())
   {
     for (uint32 y = 0; y < height; y++)
@@ -1502,7 +1495,7 @@ RVizCloudAnnotation::Uint64Vector RVizCloudAnnotation::RectangleSelectionToIds( 
           const Int32PolyTriangle &tri = tri_cond[i];
           const int32 contains = tri.Contains(x + start_x, y + start_y);
           if (contains <= 0)
-            found += 1;  // inside
+            found += 1; // inside
         }
 
         virtual_image_mask[y * width + x] = (found % 2);
@@ -1522,7 +1515,7 @@ RVizCloudAnnotation::Uint64Vector RVizCloudAnnotation::RectangleSelectionToIds( 
     const Eigen::Vector2i itpt = tpt.head<2>().cast<int>() - Eigen::Vector2i(start_x, start_y);
     const float depth = -(camera_pose_inv * ept).z();
     if (depth < 0.0)
-      continue;  // behind the observer
+      continue; // behind the observer
 
     if (is_deep_selection)
     {
@@ -1530,7 +1523,7 @@ RVizCloudAnnotation::Uint64Vector RVizCloudAnnotation::RectangleSelectionToIds( 
         continue;
       if (!virtual_image_mask[itpt.x() + itpt.y() * width])
         continue;
-      selected_points[i] = true;  //确定选择的点
+      selected_points[i] = true; //确定选择的点
       continue;
     }
 
@@ -1589,7 +1582,7 @@ RVizCloudAnnotation::Uint64Vector RVizCloudAnnotation::RectangleSelectionToIds( 
   return ids;
 }
 
-void RVizCloudAnnotation::VectorSelection(const Uint64Vector &ids)  //对选择的点做处理
+void RVizCloudAnnotation::VectorSelection(const Uint64Vector &ids) //对选择的点做处理
 {
   if (m_edit_mode == EDIT_MODE_CONTROL_POINT)
   {
@@ -1667,9 +1660,9 @@ std::string RVizCloudAnnotation::AppendTimestampBeforeExtension(const std::strin
   const std::size_t last_dot = filename.rfind('.');
   const std::size_t last_slash = filename.rfind("/");
   if (last_dot == std::string::npos)
-    return filename + datetime;  // no dot
+    return filename + datetime; // no dot
   if (last_slash != std::string::npos && last_slash > last_dot)
-    return filename + datetime;  // the dot is in a directory
+    return filename + datetime; // the dot is in a directory
 
   return filename.substr(0, last_dot) + datetime + filename.substr(last_dot);
 }
@@ -1761,7 +1754,7 @@ void RVizCloudAnnotation::generateKerb(const PointXYZRGBNormalCloud &cloud)
     KERB_SET[KERB_ID][i][0] = ept.x();
     KERB_SET[KERB_ID][i][1] = ept.y();
     KERB_SET[KERB_ID][i][2] = ept.z();
-    KERB_SET[KERB_ID][i][3] = ids_in_kerb[KERB_ID][i];  // point id
+    KERB_SET[KERB_ID][i][3] = ids_in_kerb[KERB_ID][i]; // point id
 
     marker.points.push_back(P);
   }
@@ -1771,7 +1764,7 @@ void RVizCloudAnnotation::generateKerb(const PointXYZRGBNormalCloud &cloud)
 }
 
 void RVizCloudAnnotation::generateLane(const PointXYZRGBNormalCloud &cloud)
-{  // const Eigen::Affine3f camera_pose_inv,
+{ // const Eigen::Affine3f camera_pose_inv,
   Marker marker;
 
   marker.header.frame_id = m_frame_id;
@@ -1811,7 +1804,7 @@ void RVizCloudAnnotation::generateLane(const PointXYZRGBNormalCloud &cloud)
     LANE_SET[LANE_ID][i][0] = ept.x();
     LANE_SET[LANE_ID][i][1] = ept.y();
     LANE_SET[LANE_ID][i][2] = ept.z();
-    LANE_SET[LANE_ID][i][3] = ids_in_lane[LANE_ID][i];  // point id
+    LANE_SET[LANE_ID][i][3] = ids_in_lane[LANE_ID][i]; // point id
 
     marker.points.push_back(P);
   }
@@ -1821,7 +1814,7 @@ void RVizCloudAnnotation::generateLane(const PointXYZRGBNormalCloud &cloud)
 }
 
 void RVizCloudAnnotation::generateBbox(const PointXYZRGBNormalCloud &cloud, bool if_tilt)
-{  // const Eigen::Affine3f camera_pose_inv,
+{ // const Eigen::Affine3f camera_pose_inv,
   if (ids_in_bbox[BBOX_ID].size() < 2)
   {
     EmptyBboxToMarker(BBOX_ID);
@@ -1835,7 +1828,7 @@ void RVizCloudAnnotation::generateBbox(const PointXYZRGBNormalCloud &cloud, bool
 
   if (if_tilt == false)
   {
-    float shape[6] = { r_ept.x(), r_ept.x(), r_ept.y(), r_ept.y(), r_ept.z(), r_ept.z() };
+    float shape[6] = {r_ept.x(), r_ept.x(), r_ept.y(), r_ept.y(), r_ept.z(), r_ept.z()};
 
     for (uint64 i = 1; i < ids_in_bbox[BBOX_ID].size(); i++)
     {
@@ -1884,8 +1877,8 @@ void RVizCloudAnnotation::generateBbox(const PointXYZRGBNormalCloud &cloud, bool
   }
   else
   {
-    float s[10] = { r_ept.x(), r_ept.y(), r_ept.x(), r_ept.y(), r_ept.x(),
-                    r_ept.y(), r_ept.x(), r_ept.y(), r_ept.z(), r_ept.z() };
+    float s[10] = {r_ept.x(), r_ept.y(), r_ept.x(), r_ept.y(), r_ept.x(),
+                   r_ept.y(), r_ept.x(), r_ept.y(), r_ept.z(), r_ept.z()};
 
     for (uint64 i = 1; i < ids_in_bbox[BBOX_ID].size(); i++)
     {
@@ -2094,8 +2087,7 @@ void RVizCloudAnnotation::BboxToMarker(const float shape[], const int id, bool i
     marker.scale.z = fabs(shape[8] - shape[9]);
   }
 
-  float alpha = marker.pose.position.y > 0 ? atan2f(marker.pose.position.x, marker.pose.position.y) :
-                                             -atan2f(marker.pose.position.x, marker.pose.position.y);
+  float alpha = marker.pose.position.y > 0 ? atan2f(marker.pose.position.x, marker.pose.position.y) : -atan2f(marker.pose.position.x, marker.pose.position.y);
 
   ROS_INFO("rviz_cloud_annotation: alpha is %f", alpha);
 
@@ -2236,7 +2228,7 @@ void RVizCloudAnnotation::FinalLabel(PointXYZRGBNormalCloud &cloud)
     for (int j = 0; j <= BBOX_ID; j++)
     {
       if (BBOX_SET[j][10] < 1)
-      {  //空BBOX
+      { //空BBOX
         continue;
       }
       if (InBbox(cloud[i].x, cloud[i].y, cloud[i].z, j) == true)
@@ -2270,7 +2262,7 @@ bool RVizCloudAnnotation::InBbox(float x, float y, float z, int i)
   float C1 = BBOX_SET[i][6];
   float C2 = BBOX_SET[i][7];
 
-  if (BBOX_SET[i][9] < 0)  // no tilt
+  if (BBOX_SET[i][9] < 0) // no tilt
   {
     if (x <= B1 && x >= B2 && y <= B3 && y >= B4 && z <= C1 && z >= C2)
     {
@@ -2281,7 +2273,7 @@ bool RVizCloudAnnotation::InBbox(float x, float y, float z, int i)
       return false;
     }
   }
-  else if (BBOX_SET[i][9] > 0)  // tilt
+  else if (BBOX_SET[i][9] > 0) // tilt
   {
     // ROS_INFO("rviz_cloud_annotation: exist 1 ");
     // ROS_INFO("rviz_cloud_annotation: BBOX try:  %f  %f  %f  %f  %f  %f  %f  %f ", A, B, B1, B2, B3, B4, C1, C2);
@@ -2464,7 +2456,7 @@ void RVizCloudAnnotation::InitNewCloud(ros::NodeHandle &nh)
     {
       std::string file = m_dataset_files[FILE_ID];
       ROS_INFO("rviz_cloud_annotation: file_now: %s", file.c_str());
-      LoadCloud(file, param_string2, *m_cloud);  //加载点云
+      LoadCloud(file, param_string2, *m_cloud); //加载点云
     }
     catch (const std::string &msg)
     {

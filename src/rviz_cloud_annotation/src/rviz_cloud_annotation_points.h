@@ -12,8 +12,8 @@
 
 // PCL
 #include <pcl/point_cloud.h>
-#include <pcl/common/colors.h>
 #include <pcl/point_types.h>
+#include <pcl/common/colors.h>
 
 // boost
 #include <boost/shared_ptr.hpp>

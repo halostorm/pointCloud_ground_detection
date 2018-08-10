@@ -64,15 +64,6 @@ include_directories(
 
 add_executable(rviz_cloud_annotation_node
   src/rviz_cloud_annotation.cpp
-  src/rviz_cloud_annotation_points.cpp
-  src/rviz_cloud_annotation_points_io.cpp
-  src/rviz_cloud_annotation_point_plane.cpp
-  src/rviz_cloud_annotation_class.cpp
-  src/rviz_cloud_annotation_undo.cpp
-  src/point_neighborhood.cpp
-  src/point_neighborhood_search.cpp
-  src/point_cloud_plane_hf.cpp
-  src/point_cloud_plane_detect.cpp
   ${MAYBE_PCL_COMMON_COLORS}
   )
 
@@ -80,18 +71,20 @@ add_dependencies(rviz_cloud_annotation_node ${${PROJECT_NAME}_EXPORTED_TARGETS} 
 
 target_link_libraries(
   rviz_cloud_annotation_node
+  rviz_cloud_annotation_com
+  point_cloud_plane_detection
   ${PCL_LIBRARIES}
   ${Boost_LIBRARIES}
   ${Eigen3_LIBRARIES}
   ${catkin_LIBRARIES}
   )
 
+
 set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
 
 add_library(rviz_cloud_annotation_plugin
   src/rviz_cloud_annotation_plugin.cpp
   src/rviz_select_tool.cpp
-
   ${MAYBE_PCL_COMMON_COLORS}
 )
 
@@ -103,4 +96,42 @@ target_link_libraries(rviz_cloud_annotation_plugin
   ${Eigen3_LIBRARIES}
   ${catkin_LIBRARIES}
   Qt5::Widgets
+)
+
+
+add_library(rviz_cloud_annotation_com
+  src/rviz_cloud_annotation_points.cpp
+  src/rviz_cloud_annotation_points_io.cpp
+  src/rviz_cloud_annotation_point_plane.cpp
+  src/rviz_cloud_annotation_class.cpp
+  src/rviz_cloud_annotation_undo.cpp
+  src/point_neighborhood.cpp
+  src/point_neighborhood_search.cpp
+  ${MAYBE_PCL_COMMON_COLORS}
+)
+
+add_dependencies(rviz_cloud_annotation_com ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+
+target_link_libraries(rviz_cloud_annotation_com
+  ${PCL_LIBRARIES}
+  ${Boost_LIBRARIES}
+  ${Eigen3_LIBRARIES}
+  ${catkin_LIBRARIES}
+  Qt5::Widgets
+)
+
+
+add_library(point_cloud_plane_detection
+  src/point_cloud_plane_curves_extract.cpp
+  src/point_cloud_plane_segement.cpp
+)
+
+
+add_dependencies(point_cloud_plane_detection ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+
+target_link_libraries(point_cloud_plane_detection
+  ${PCL_LIBRARIES}
+  ${Boost_LIBRARIES}
+  ${Eigen3_LIBRARIES}
+  ${catkin_LIBRARIES}
 )

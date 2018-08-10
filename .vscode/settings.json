@@ -2,5 +2,10 @@
     "python.autoComplete.extraPaths": [
         "/home/halo/Nullmax_Lidar_Annotation_Tools1/devel/lib/python2.7/dist-packages",
         "/opt/ros/kinetic/lib/python2.7/dist-packages"
-    ]
+    ],
+    "files.associations": {
+        "hash_map": "cpp",
+        "hash_set": "cpp",
+        "initializer_list": "cpp"
+    }
 }

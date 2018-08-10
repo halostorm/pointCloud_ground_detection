@@ -1,4 +1,3 @@
-#include <sys/stat.h>
 #include <sys/types.h>
 
 // STL
@@ -27,7 +26,6 @@
 
 // PCL
 #include <pcl/PCLPointCloud2.h>
-#include <pcl/common/colors.h>
 #include <pcl/conversions.h>
 #include <pcl/io/pcd_io.h>
 #include <pcl/kdtree/kdtree_flann.h>
