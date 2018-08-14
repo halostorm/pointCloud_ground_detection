@@ -1638,32 +1638,32 @@ src/point_cloud_plane_curves_extract.cpp.s:
 	cd /home/halo/WorkSpace/Columbus_Ground_Detection/build && $(MAKE) -f rviz_cloud_annotation/CMakeFiles/point_cloud_plane_detection.dir/build.make rviz_cloud_annotation/CMakeFiles/point_cloud_plane_detection.dir/src/point_cloud_plane_curves_extract.cpp.s
 .PHONY : src/point_cloud_plane_curves_extract.cpp.s
 
-src/point_cloud_plane_segement.o: src/point_cloud_plane_segement.cpp.o
+src/point_cloud_plane_segment.o: src/point_cloud_plane_segment.cpp.o
 
-.PHONY : src/point_cloud_plane_segement.o
+.PHONY : src/point_cloud_plane_segment.o
 
 # target to build an object file
-src/point_cloud_plane_segement.cpp.o:
-	cd /home/halo/WorkSpace/Columbus_Ground_Detection/build && $(MAKE) -f rviz_cloud_annotation/CMakeFiles/point_cloud_plane_detection.dir/build.make rviz_cloud_annotation/CMakeFiles/point_cloud_plane_detection.dir/src/point_cloud_plane_segement.cpp.o
-.PHONY : src/point_cloud_plane_segement.cpp.o
+src/point_cloud_plane_segment.cpp.o:
+	cd /home/halo/WorkSpace/Columbus_Ground_Detection/build && $(MAKE) -f rviz_cloud_annotation/CMakeFiles/point_cloud_plane_detection.dir/build.make rviz_cloud_annotation/CMakeFiles/point_cloud_plane_detection.dir/src/point_cloud_plane_segment.cpp.o
+.PHONY : src/point_cloud_plane_segment.cpp.o
 
-src/point_cloud_plane_segement.i: src/point_cloud_plane_segement.cpp.i
+src/point_cloud_plane_segment.i: src/point_cloud_plane_segment.cpp.i
 
-.PHONY : src/point_cloud_plane_segement.i
+.PHONY : src/point_cloud_plane_segment.i
 
 # target to preprocess a source file
-src/point_cloud_plane_segement.cpp.i:
-	cd /home/halo/WorkSpace/Columbus_Ground_Detection/build && $(MAKE) -f rviz_cloud_annotation/CMakeFiles/point_cloud_plane_detection.dir/build.make rviz_cloud_annotation/CMakeFiles/point_cloud_plane_detection.dir/src/point_cloud_plane_segement.cpp.i
-.PHONY : src/point_cloud_plane_segement.cpp.i
+src/point_cloud_plane_segment.cpp.i:
+	cd /home/halo/WorkSpace/Columbus_Ground_Detection/build && $(MAKE) -f rviz_cloud_annotation/CMakeFiles/point_cloud_plane_detection.dir/build.make rviz_cloud_annotation/CMakeFiles/point_cloud_plane_detection.dir/src/point_cloud_plane_segment.cpp.i
+.PHONY : src/point_cloud_plane_segment.cpp.i
 
-src/point_cloud_plane_segement.s: src/point_cloud_plane_segement.cpp.s
+src/point_cloud_plane_segment.s: src/point_cloud_plane_segment.cpp.s
 
-.PHONY : src/point_cloud_plane_segement.s
+.PHONY : src/point_cloud_plane_segment.s
 
 # target to generate assembly for a file
-src/point_cloud_plane_segement.cpp.s:
-	cd /home/halo/WorkSpace/Columbus_Ground_Detection/build && $(MAKE) -f rviz_cloud_annotation/CMakeFiles/point_cloud_plane_detection.dir/build.make rviz_cloud_annotation/CMakeFiles/point_cloud_plane_detection.dir/src/point_cloud_plane_segement.cpp.s
-.PHONY : src/point_cloud_plane_segement.cpp.s
+src/point_cloud_plane_segment.cpp.s:
+	cd /home/halo/WorkSpace/Columbus_Ground_Detection/build && $(MAKE) -f rviz_cloud_annotation/CMakeFiles/point_cloud_plane_detection.dir/build.make rviz_cloud_annotation/CMakeFiles/point_cloud_plane_detection.dir/src/point_cloud_plane_segment.cpp.s
+.PHONY : src/point_cloud_plane_segment.cpp.s
 
 src/point_neighborhood.o: src/point_neighborhood.cpp.o
 
@@ -2053,9 +2053,9 @@ help:
 	@echo "... src/point_cloud_plane_curves_extract.o"
 	@echo "... src/point_cloud_plane_curves_extract.i"
 	@echo "... src/point_cloud_plane_curves_extract.s"
-	@echo "... src/point_cloud_plane_segement.o"
-	@echo "... src/point_cloud_plane_segement.i"
-	@echo "... src/point_cloud_plane_segement.s"
+	@echo "... src/point_cloud_plane_segment.o"
+	@echo "... src/point_cloud_plane_segment.i"
+	@echo "... src/point_cloud_plane_segment.s"
 	@echo "... src/point_neighborhood.o"
 	@echo "... src/point_neighborhood.i"
 	@echo "... src/point_neighborhood.s"

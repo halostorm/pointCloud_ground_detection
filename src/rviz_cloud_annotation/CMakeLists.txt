@@ -123,7 +123,7 @@ target_link_libraries(rviz_cloud_annotation_com
 
 add_library(point_cloud_plane_detection
   src/point_cloud_plane_curves_extract.cpp
-  src/point_cloud_plane_segement.cpp
+  src/point_cloud_plane_segment.cpp
 )
 
 

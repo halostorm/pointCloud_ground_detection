@@ -166,6 +166,10 @@ pcl/point_cloud.h
 pcl/point_types.h
 -
 
+/home/halo/WorkSpace/Columbus_Ground_Detection/src/rviz_cloud_annotation/src/point_cloud_plane_segment.h
+point_cloud_plane_curves_extract.h
+/home/halo/WorkSpace/Columbus_Ground_Detection/src/rviz_cloud_annotation/src/point_cloud_plane_curves_extract.h
+
 /home/halo/WorkSpace/Columbus_Ground_Detection/src/rviz_cloud_annotation/src/point_neighborhood.h
 vector
 -
@@ -225,8 +229,8 @@ point_cloud_plane_hf.h
 /home/halo/WorkSpace/Columbus_Ground_Detection/src/rviz_cloud_annotation/src/point_cloud_plane_hf.h
 point_neighborhood_search.h
 /home/halo/WorkSpace/Columbus_Ground_Detection/src/rviz_cloud_annotation/src/point_neighborhood_search.h
-point_cloud_plane_curves_extract.h
-/home/halo/WorkSpace/Columbus_Ground_Detection/src/rviz_cloud_annotation/src/point_cloud_plane_curves_extract.h
+point_cloud_plane_segment.h
+/home/halo/WorkSpace/Columbus_Ground_Detection/src/rviz_cloud_annotation/src/point_cloud_plane_segment.h
 sys/stat.h
 -
 sys/types.h

@@ -147,6 +147,7 @@ rviz_cloud_annotation/CMakeFiles/rviz_cloud_annotation_node.dir/src/rviz_cloud_a
  /home/halo/WorkSpace/Columbus_Ground_Detection/src/rviz_cloud_annotation/pcl_include/pcl/common/colors.h
  /home/halo/WorkSpace/Columbus_Ground_Detection/src/rviz_cloud_annotation/src/point_cloud_plane_curves_extract.h
  /home/halo/WorkSpace/Columbus_Ground_Detection/src/rviz_cloud_annotation/src/point_cloud_plane_hf.h
+ /home/halo/WorkSpace/Columbus_Ground_Detection/src/rviz_cloud_annotation/src/point_cloud_plane_segment.h
  /home/halo/WorkSpace/Columbus_Ground_Detection/src/rviz_cloud_annotation/src/point_neighborhood.h
  /home/halo/WorkSpace/Columbus_Ground_Detection/src/rviz_cloud_annotation/src/point_neighborhood_search.h
  /home/halo/WorkSpace/Columbus_Ground_Detection/src/rviz_cloud_annotation/src/rviz_cloud_annotation.cpp

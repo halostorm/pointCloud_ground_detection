@@ -1,22 +1,22 @@
 Determining if the pthread_create exist failed with the following output:
 Change Dir: /home/halo/WorkSpace/Columbus_Ground_Detection/build/CMakeFiles/CMakeTmp
 
-Run Build Command:"/usr/bin/make" "cmTC_7b094/fast"
-/usr/bin/make -f CMakeFiles/cmTC_7b094.dir/build.make CMakeFiles/cmTC_7b094.dir/build
+Run Build Command:"/usr/bin/make" "cmTC_39a7c/fast"
+/usr/bin/make -f CMakeFiles/cmTC_39a7c.dir/build.make CMakeFiles/cmTC_39a7c.dir/build
 make[1]: Entering directory '/home/halo/WorkSpace/Columbus_Ground_Detection/build/CMakeFiles/CMakeTmp'
-Building C object CMakeFiles/cmTC_7b094.dir/CheckSymbolExists.c.o
-/usr/bin/cc     -o CMakeFiles/cmTC_7b094.dir/CheckSymbolExists.c.o   -c /home/halo/WorkSpace/Columbus_Ground_Detection/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c
-Linking C executable cmTC_7b094
-/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_7b094.dir/link.txt --verbose=1
-/usr/bin/cc       CMakeFiles/cmTC_7b094.dir/CheckSymbolExists.c.o  -o cmTC_7b094 -rdynamic 
-CMakeFiles/cmTC_7b094.dir/CheckSymbolExists.c.o: In function `main':
+Building C object CMakeFiles/cmTC_39a7c.dir/CheckSymbolExists.c.o
+/usr/bin/cc     -o CMakeFiles/cmTC_39a7c.dir/CheckSymbolExists.c.o   -c /home/halo/WorkSpace/Columbus_Ground_Detection/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c
+Linking C executable cmTC_39a7c
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_39a7c.dir/link.txt --verbose=1
+/usr/bin/cc       CMakeFiles/cmTC_39a7c.dir/CheckSymbolExists.c.o  -o cmTC_39a7c -rdynamic 
+CMakeFiles/cmTC_39a7c.dir/CheckSymbolExists.c.o: In function `main':
 CheckSymbolExists.c:(.text+0x16): undefined reference to `pthread_create'
 collect2: error: ld returned 1 exit status
-CMakeFiles/cmTC_7b094.dir/build.make:97: recipe for target 'cmTC_7b094' failed
-make[1]: *** [cmTC_7b094] Error 1
+CMakeFiles/cmTC_39a7c.dir/build.make:97: recipe for target 'cmTC_39a7c' failed
+make[1]: *** [cmTC_39a7c] Error 1
 make[1]: Leaving directory '/home/halo/WorkSpace/Columbus_Ground_Detection/build/CMakeFiles/CMakeTmp'
-Makefile:126: recipe for target 'cmTC_7b094/fast' failed
-make: *** [cmTC_7b094/fast] Error 2
+Makefile:126: recipe for target 'cmTC_39a7c/fast' failed
+make: *** [cmTC_39a7c/fast] Error 2
 
 File /home/halo/WorkSpace/Columbus_Ground_Detection/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
 /* */
@@ -36,20 +36,20 @@ int main(int argc, char** argv)
 Determining if the function pthread_create exists in the pthreads failed with the following output:
 Change Dir: /home/halo/WorkSpace/Columbus_Ground_Detection/build/CMakeFiles/CMakeTmp
 
-Run Build Command:"/usr/bin/make" "cmTC_3e962/fast"
-/usr/bin/make -f CMakeFiles/cmTC_3e962.dir/build.make CMakeFiles/cmTC_3e962.dir/build
+Run Build Command:"/usr/bin/make" "cmTC_ecae3/fast"
+/usr/bin/make -f CMakeFiles/cmTC_ecae3.dir/build.make CMakeFiles/cmTC_ecae3.dir/build
 make[1]: Entering directory '/home/halo/WorkSpace/Columbus_Ground_Detection/build/CMakeFiles/CMakeTmp'
-Building C object CMakeFiles/cmTC_3e962.dir/CheckFunctionExists.c.o
-/usr/bin/cc    -DCHECK_FUNCTION_EXISTS=pthread_create   -o CMakeFiles/cmTC_3e962.dir/CheckFunctionExists.c.o   -c /usr/share/cmake-3.5/Modules/CheckFunctionExists.c
-Linking C executable cmTC_3e962
-/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_3e962.dir/link.txt --verbose=1
-/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=pthread_create    CMakeFiles/cmTC_3e962.dir/CheckFunctionExists.c.o  -o cmTC_3e962 -rdynamic -lpthreads 
+Building C object CMakeFiles/cmTC_ecae3.dir/CheckFunctionExists.c.o
+/usr/bin/cc    -DCHECK_FUNCTION_EXISTS=pthread_create   -o CMakeFiles/cmTC_ecae3.dir/CheckFunctionExists.c.o   -c /usr/share/cmake-3.5/Modules/CheckFunctionExists.c
+Linking C executable cmTC_ecae3
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_ecae3.dir/link.txt --verbose=1
+/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=pthread_create    CMakeFiles/cmTC_ecae3.dir/CheckFunctionExists.c.o  -o cmTC_ecae3 -rdynamic -lpthreads 
 /usr/bin/ld: cannot find -lpthreads
 collect2: error: ld returned 1 exit status
-CMakeFiles/cmTC_3e962.dir/build.make:97: recipe for target 'cmTC_3e962' failed
-make[1]: *** [cmTC_3e962] Error 1
+CMakeFiles/cmTC_ecae3.dir/build.make:97: recipe for target 'cmTC_ecae3' failed
+make[1]: *** [cmTC_ecae3] Error 1
 make[1]: Leaving directory '/home/halo/WorkSpace/Columbus_Ground_Detection/build/CMakeFiles/CMakeTmp'
-Makefile:126: recipe for target 'cmTC_3e962/fast' failed
-make: *** [cmTC_3e962/fast] Error 2
+Makefile:126: recipe for target 'cmTC_ecae3/fast' failed
+make: *** [cmTC_ecae3/fast] Error 2
 
 

@@ -30,20 +30,24 @@
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
 
+// System Params
 #define _lowerBound -15
 #define _upperBound 15
 #define _numOfRings 16
-#define _horizontalAngleResolution 0.4
-#define _planeRings 5
+#define _horizontalAngleResolution 2.0
+#define _planeRings 6
 
 #define _basicRadius 6.9
+#define _windowsize 50
+// Density Filter Params
 #define _srcLenThreshold 0.2
 #define _arcNumThreshold 7
-#define _radiusScaleThreshold 0.8
-#define _breakingDistanceThreshold 0.3
+// Size Filter Params
+#define _breakingDistanceThreshold 0.2
 #define _breakingSizeThreshold 30
-#define _numOfAngleGrid 900  // 360/0.4
-#define _windowsize 50
+// Radius Filter Params
+#define _numOfAngleGrid 180  // 360/2.0
+#define _radiusScaleThreshold 0.2
 
 #define _max(a, b) (((a) > (b)) ? (a) : (b))
 #define _min(a, b) (((a) > (b)) ? (b) : (a))
@@ -59,37 +63,41 @@ typedef pcl::PointCloud<PointXYZRGBNormal> PointXYZRGBNormalCloud;
 
 class PointCloudPlaneCurvesExtract
 {
-private:
-  PointXYZRGBNormalCloud* mPlaneVector;
+public:
+  PointXYZRGBNormalCloud *mPlaneVector;
   PointXYZRGBNormalCloud mCurvesVector[_numOfRings];
   PointXYZRGBNormalCloud mDensityCurvesVector[_numOfRings];
   PointXYZRGBNormalCloud mRadiusCurvesVector[_numOfRings];
   PointXYZRGBNormalCloud mSizeCurvesVector[_numOfRings];
   int64 PLANE_ID = 0;
-
-public:
   Uint64Vector mCurvesId[_numOfRings];
   Uint64Vector mDensityCurvesId[_numOfRings];
   Uint64Vector mSizeCurvesId[_numOfRings];
   Uint64Vector mRadiusCurvesId[_numOfRings];
+
   Uint64Vector mAnglePointId[_numOfRings][_numOfAngleGrid];
   PointXYZRGBNormalCloud mAnglePointVector[_numOfRings][_numOfAngleGrid];
-  float mAngleMean[_numOfRings][_numOfAngleGrid] = { { 0 } };
-  Uint64Vector mCommonFilterCurvesId[_numOfRings];
-  float mHeightMean[_numOfRings];
-  float mScanringRadius[_numOfRings];
-  PointXYZRGBNormalCloud* SearchCurves(const PointXYZRGBNormalCloud& PointCloud);
-  PointXYZRGBNormalCloud CurveDensityFilter(const PointXYZRGBNormalCloud& Curve, int64 ringID, Uint64Vector& curveId);
-  PointXYZRGBNormalCloud CurveSizeFilter(const PointXYZRGBNormalCloud& Curve, int64 ringID, Uint64Vector& curveId);
 
-  PointXYZRGBNormalCloud* CurvesRadiusFilter(const PointXYZRGBNormalCloud* CurvesVector, Uint64Vector* CurvesId);
+  float mSentorMeanRadius[_numOfRings][_numOfAngleGrid] = { { 0 } };
+  Uint64Vector mSentorIds[_numOfRings][_numOfAngleGrid];
+  Uint64Vector mSentorAngle[_numOfRings];
+  Uint64Vector mSentorLabelVector[_numOfRings];
+
+  float mScanringRadius[_numOfRings];
+
+  PointXYZRGBNormalCloud *SearchCurves(const PointXYZRGBNormalCloud &PointCloud);
+  void CurveDensityFilter(const PointXYZRGBNormalCloud &Curve, int64 ringID, Uint64Vector &curveId,
+                                            PointXYZRGBNormalCloud &outCurve);
+  void CurveSizeFilter(const PointXYZRGBNormalCloud &Curve, int64 ringID, Uint64Vector &curveId,
+                                         PointXYZRGBNormalCloud &outCurve);
+  void *CurvesRadiusFilter(const PointXYZRGBNormalCloud *CurvesVector, Uint64Vector *CurvesId);
 
   float InverseSqrt(float x)
   {
     float half_x = 0.5 * x;
-    int i = *((int*)&x);               // 以整数方式读取X
+    int i = *((int *)&x);              // 以整数方式读取X
     i = 0x5f3759df - (i >> 1);         // 神奇的步骤
-    x = *((float*)&i);                 // 再以浮点方式读取i
+    x = *((float *)&i);                // 再以浮点方式读取i
     x = x * (1.5 - (half_x * x * x));  // 牛顿迭代一遍提高精度
     return x;
   }
@@ -111,6 +119,6 @@ public:
     return dVar / m;
   }
 
-  int64 GetScanringID(const float& angle);
+  int64 GetScanringID(const float &angle);
   float GetScanringRadius(const int64 ID);
 };

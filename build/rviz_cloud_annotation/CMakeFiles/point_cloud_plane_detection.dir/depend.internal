@@ -326,10 +326,10 @@ rviz_cloud_annotation/CMakeFiles/point_cloud_plane_detection.dir/src/point_cloud
  /usr/include/x86_64-linux-gnu/sys/time.h
  /usr/include/x86_64-linux-gnu/sys/timeb.h
  /usr/include/x86_64-linux-gnu/sys/types.h
-rviz_cloud_annotation/CMakeFiles/point_cloud_plane_detection.dir/src/point_cloud_plane_segement.cpp.o
+rviz_cloud_annotation/CMakeFiles/point_cloud_plane_detection.dir/src/point_cloud_plane_segment.cpp.o
  /home/halo/WorkSpace/Columbus_Ground_Detection/src/rviz_cloud_annotation/src/point_cloud_plane_curves_extract.h
- /home/halo/WorkSpace/Columbus_Ground_Detection/src/rviz_cloud_annotation/src/point_cloud_plane_segement.cpp
- /home/halo/WorkSpace/Columbus_Ground_Detection/src/rviz_cloud_annotation/src/point_cloud_plane_segement.h
+ /home/halo/WorkSpace/Columbus_Ground_Detection/src/rviz_cloud_annotation/src/point_cloud_plane_segment.cpp
+ /home/halo/WorkSpace/Columbus_Ground_Detection/src/rviz_cloud_annotation/src/point_cloud_plane_segment.h
  /opt/ros/kinetic/include/boost_161_condition_variable.h
  /opt/ros/kinetic/include/boost_161_pthread_condition_variable.h
  /opt/ros/kinetic/include/boost_161_pthread_condition_variable_fwd.h

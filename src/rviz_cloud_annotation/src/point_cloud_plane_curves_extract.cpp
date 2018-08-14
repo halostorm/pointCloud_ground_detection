@@ -2,6 +2,11 @@
 
 PointXYZRGBNormalCloud *PointCloudPlaneCurvesExtract::SearchCurves(const PointXYZRGBNormalCloud &PointCloud)
 {
+  for (int i = 0; i < _numOfRings; i++)
+  {
+    mCurvesVector[i].reserve(2000);
+    mCurvesId[i].reserve(2000);
+  }
   for (uint64 i = 0; i < PointCloud.size(); i++)
   {
     PointXYZRGBNormal point = PointCloud[i];
@@ -14,18 +19,18 @@ PointXYZRGBNormalCloud *PointCloudPlaneCurvesExtract::SearchCurves(const PointXY
     }
   }
 
-  for (int i = 0; i <= _planeRings; i++)
+  for (int i = 0; i < _planeRings; i++)
   {
     mScanringRadius[i] = GetScanringRadius(i);
   }
 
   // DensityFilter
-  for (int i = 0; i <= _planeRings; i++)
+  for (int i = 0; i < _planeRings; i++)
   {
     // ROS_INFO("PointCloudPlaneCurvesExtract: mCurvesVector[%d] Size : %ld", i, mCurvesVector[i].size());
     if (mCurvesVector[i].size() > _windowsize)
     {
-      mDensityCurvesVector[i] = CurveDensityFilter(mCurvesVector[i], i, mCurvesId[i]);
+      CurveDensityFilter(mCurvesVector[i], i, mCurvesId[i], mDensityCurvesVector[i]);
     }
     // ROS_INFO("PointCloudPlaneCurvesExtract: mDensityCurvesVector[%d] Size : %ld", i, mDensityCurvesVector[i].size());
   }
@@ -34,27 +39,27 @@ PointXYZRGBNormalCloud *PointCloudPlaneCurvesExtract::SearchCurves(const PointXY
   CurvesRadiusFilter(mDensityCurvesVector, mDensityCurvesId);
 
   // SizeFilter
-  for (int i = 0; i <= _planeRings; i++)
+  for (int i = 0; i < _planeRings; i++)
   {
-    // ROS_INFO("PointCloudPlaneCurvesExtract: mRadiusCurvesVector[%d] Size : %ld", i, mRadiusCurvesVector[i].size());
+    //ROS_INFO("PointCloudPlaneCurvesExtract: mRadiusCurvesVector[%d] Size : %ld", i, mRadiusCurvesVector[i].size());
     if (mRadiusCurvesVector[i].size() > _windowsize)
     {
-      mSizeCurvesVector[i] = CurveSizeFilter(mRadiusCurvesVector[i], i, mRadiusCurvesId[i]);
+      CurveSizeFilter(mRadiusCurvesVector[i], i, mRadiusCurvesId[i], mSizeCurvesVector[i]);
     }
-    // ROS_INFO("PointCloudPlaneCurvesExtract: mSizeCurvesVector[%d] Size : %ld", i, mSizeCurvesVector[i].size());
+    //ROS_INFO("PointCloudPlaneCurvesExtract: mSizeCurvesVector[%d] Size : %ld", i, mSizeCurvesVector[i].size());
   }
   return mSizeCurvesVector;
 }
 
-PointXYZRGBNormalCloud PointCloudPlaneCurvesExtract::CurveDensityFilter(const PointXYZRGBNormalCloud &Curve, int64 ringID,
-                                                                 Uint64Vector &curveId)
+void PointCloudPlaneCurvesExtract::CurveDensityFilter(const PointXYZRGBNormalCloud &Curve, int64 ringID,
+                                                      Uint64Vector &curveId, PointXYZRGBNormalCloud &outCurve)
 {
-  PointXYZRGBNormalCloud filterCurve;
+  outCurve.reserve(Curve.size());
+  mDensityCurvesId[ringID].reserve(curveId.size());
   float TrueRadius = mScanringRadius[ringID];
-  // ROS_INFO("PointCloudPlaneCurvesExtract: id: %ld, TrueRadius: %f", ringID, TrueRadius);
   if (TrueRadius < 0)
   {
-    return filterCurve;
+    return;
   }
   float arcLen = 0;
   float radiusMean = 0;
@@ -74,15 +79,12 @@ PointXYZRGBNormalCloud PointCloudPlaneCurvesExtract::CurveDensityFilter(const Po
     if (arcLen >= _srcLenThreshold)
     {
       radiusMean /= arcNum;
-      // if (false)
-      //   ROS_INFO("PointCloudPlaneCurvesExtract: radiusMean: %f , TrueRadius: %f, arcNum: %ld, arcLen: %f", radiusMean,
-      //            TrueRadius, arcNum, arcLen);
-      if (arcNum > _arcNumThreshold) // && radiusMean > _radiusScaleThreshold * TrueRadius)
+      if (arcNum > _arcNumThreshold)
       {
         for (int k = i - arcNum + 1; k <= i; k++)
         {
           mDensityCurvesId[ringID].push_back(curveId[k]);
-          filterCurve.push_back(Curve[k]);
+          outCurve.push_back(Curve[k]);
         }
       }
       arcLen = 0;
@@ -90,68 +92,15 @@ PointXYZRGBNormalCloud PointCloudPlaneCurvesExtract::CurveDensityFilter(const Po
       radiusMean = 0;
     }
   }
-  return filterCurve;
 }
 
-PointXYZRGBNormalCloud PointCloudPlaneCurvesExtract::CurveSizeFilter(const PointXYZRGBNormalCloud &Curve, int64 ringID,
-                                                              Uint64Vector &curveId)
+void *PointCloudPlaneCurvesExtract::CurvesRadiusFilter(const PointXYZRGBNormalCloud *CurvesVector,
+                                                       Uint64Vector *CurvesId)
 {
-  PointXYZRGBNormalCloud filterCurve;
-  float TrueRadius = mScanringRadius[ringID];
-  float ratio = _basicRadius / TrueRadius;
-  if (TrueRadius < 0 || Curve.size() < 1)
+  for (int i = 0; i < _planeRings; i++)
   {
-    return filterCurve;
-  }
-  int LabelArray[Curve.size()];
-  int64 begin = 0;
-  int64 end = 0;
-  bool left = false;
-  bool right = false;
-  float meanZ = 0;
-  // ROS_INFO("PointCloudPlaneCurvesExtract: mDensityCurves[%ld] mean height: %f", ringID, mHeightMean[ringID]);
-  for (int i = 1; i < Curve.size(); i += 1)
-  {
-    float dx = Curve[i].x - Curve[i - 1].x;
-    float dy = Curve[i].y - Curve[i - 1].y;
-    float dz = Curve[i].z - Curve[i - 1].z;
-    meanZ += dz;
-
-    float dis = (1 / InverseSqrt(dx * dx + dy * dy + dz * dz)) * (ratio);
-
-    if (dis > _breakingDistanceThreshold)
-    {
-      end = i;
-      meanZ /= (end - begin);
-      // ROS_INFO("PointCloudPlaneCurvesExtract: delete: mean height: %f", mHeightMean[ringID]);
-      if (end - begin < _breakingSizeThreshold)
-      {
-        for (int k = begin; k < end; k++)
-        {
-          LabelArray[k] = -1;
-        }
-        // ROS_INFO("PointCloudPlaneCurvesExtract: mSizeCurvesId delete size: %ld, dis: %f", end - begin, dis);
-      }
-      begin = end;
-    }
-  }
-  for (int i = 0; i < Curve.size(); i += 1)
-  {
-    if (LabelArray[i] != -1)
-    {
-      mSizeCurvesId[ringID].push_back(curveId[i]);
-      filterCurve.push_back(Curve[i]);
-    }
-  }
-  // ROS_INFO("PointCloudPlaneCurvesExtract: mSizeCurvesId[%ld] size: %ld", ringID, filterCurve.size());
-  return filterCurve;
-}
-
-PointXYZRGBNormalCloud *PointCloudPlaneCurvesExtract::CurvesRadiusFilter(const PointXYZRGBNormalCloud *CurvesVector,
-                                                                  Uint64Vector *CurvesId)
-{
-  for (int i = 0; i <= _planeRings; i++)
-  {
+    mSentorLabelVector[i].reserve(CurvesVector[i].size());
+    mSentorAngle[i].resize(CurvesId[i].size());
     for (int j = 0; j < CurvesVector[i].size(); j++)
     {
       float x = CurvesVector[i][j].x;
@@ -161,32 +110,100 @@ PointXYZRGBNormalCloud *PointCloudPlaneCurvesExtract::CurvesRadiusFilter(const P
       {
         continue;
       }
-      mAnglePointId[i][atanAngle].push_back(CurvesId[i][j]);
-      mAnglePointVector[i][atanAngle].push_back(CurvesVector[i][j]);
-
       float radius = 1 / InverseSqrt(x * x + y * y);
-      mAngleMean[i][atanAngle] = (mAngleMean[i][atanAngle] * (mAnglePointId[i][atanAngle].size() - 1) + radius) /
-                                 mAnglePointId[i][atanAngle].size();
+      mSentorIds[i][atanAngle].push_back(j);
+      mSentorAngle[i][j] = atanAngle;
+      mSentorLabelVector[i].push_back(0);
+      mSentorMeanRadius[i][atanAngle] = (mSentorMeanRadius[i][atanAngle] * mSentorIds[i][atanAngle].size() + radius) /
+                                        (mSentorIds[i][atanAngle].size() + 1);
     }
   }
 
-  for (int j = 0; j < _planeRings; j++)
+  for (int i = 0; i < _planeRings - 1; i++)
   {
-    for (int i = 0; i < _numOfAngleGrid; i++)
+    for (int j = 0; j < _numOfAngleGrid; j++)
     {
-      if (fabs(mAngleMean[j][i] - mAngleMean[j + 1][i]) > 0.5 * fabs(mScanringRadius[j + 1] - mScanringRadius[j]))
+      if (fabs(mSentorMeanRadius[i][j] - mSentorMeanRadius[i + 1][j]) <
+          _radiusScaleThreshold * fabs(mScanringRadius[i + 1] - mScanringRadius[i]))
       {
-        mRadiusCurvesId[j + 1].insert(mRadiusCurvesId[j + 1].end(), mAnglePointId[j + 1][i].begin(),
-                                      mAnglePointId[j + 1][i].end());
-        mRadiusCurvesVector[j + 1].insert(mRadiusCurvesVector[j + 1].end(), mAnglePointVector[j + 1][i].begin(),
-                                          mAnglePointVector[j + 1][i].end());
-        if (j == 0)
+        if (i == 0)
         {
-          mRadiusCurvesId[0].insert(mRadiusCurvesId[0].end(), mAnglePointId[0][i].begin(), mAnglePointId[0][i].end());
-          mRadiusCurvesVector[0].insert(mRadiusCurvesVector[0].end(), mAnglePointVector[0][i].begin(),
-                                        mAnglePointVector[0][i].end());
+          for (int k = 0; k < mSentorIds[i][j].size(); k++)
+          {
+            uint64 id = mSentorIds[i][j][k];
+            mSentorLabelVector[i][id] = -1;
+          }
+          mSentorIds[i][j].clear();
+        }
+        for (int k = 0; k < mSentorIds[i + 1][j].size(); k++)
+        {
+          uint64 id = mSentorIds[i + 1][j][k];
+          mSentorLabelVector[i + 1][id] = -1;
+        }
+        mSentorIds[i + 1][j].clear();
+      }
+    }
+  }
+  for (int i = 0; i < _planeRings; i++)
+  {
+    for (int j = 0; j < CurvesVector[i].size(); j++)
+    {
+      if (mSentorLabelVector[i][j] != -1)
+      {
+        mRadiusCurvesId[i].push_back(CurvesId[i][j]);
+        mRadiusCurvesVector[i].push_back(CurvesVector[i][j]);
+      }
+    }
+  }
+}
+
+void PointCloudPlaneCurvesExtract::CurveSizeFilter(const PointXYZRGBNormalCloud &Curve, int64 ringID,
+                                                   Uint64Vector &curveId, PointXYZRGBNormalCloud &outCurve)
+{
+  outCurve.reserve(Curve.size());
+  mSizeCurvesId[ringID].reserve(curveId.size());
+  float TrueRadius = mScanringRadius[ringID];
+  float ratio = _basicRadius / TrueRadius;
+  if (TrueRadius < 0 || Curve.size() < 1)
+  {
+    return;
+  }
+  int LabelArray[Curve.size()];
+  int64 begin = 0;
+  int64 end = 0;
+  float meanZ = 0;
+  for (uint64 i = 1; i < Curve.size(); i += 1)
+  {
+    LabelArray[i] = 0;
+    float dx = Curve[i].x - Curve[i - 1].x;
+    float dy = Curve[i].y - Curve[i - 1].y;
+    float dz = Curve[i].z - Curve[i - 1].z;
+    meanZ += dz;
+    float dis = (1 / InverseSqrt(dx * dx + dy * dy + dz * dz)) * (ratio);
+    if (dis > _breakingDistanceThreshold)
+    {
+      end = i;
+      meanZ /= (end - begin);
+      if (end - begin < _breakingSizeThreshold)
+      {
+        for (uint64 k = begin; k < end; k++)
+        {
+          LabelArray[k] = -1;
+          // record  SentorGrid nums
+          uint64 AngleId = mSentorAngle[ringID][k];
+          mSentorIds[ringID][AngleId].erase(mSentorIds[ringID][AngleId].end() - 1);
         }
       }
+      begin = end;
+    }
+  }
+
+  for (uint64 i = 0; i < Curve.size(); i += 1)
+  {
+    if (LabelArray[i] != -1)
+    {
+      mSizeCurvesId[ringID].push_back(curveId[i]);
+      outCurve.push_back(Curve[i]);
     }
   }
 }

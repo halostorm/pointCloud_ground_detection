@@ -350,18 +350,24 @@ void RVizCloudAnnotation::LoadCloud(const std::string &filename, const std::stri
     ids_in_plane_flag.push_back(0);
   }
 
-  PointCloudPlaneCurvesExtract pcpd;
+  // Ground Detection
   clock_t start, finish;
   start = clock();
-  pcpd.SearchCurves(cloud);
-  for (int i = 0; i < 16; i++)
+
+  PointCloudPlaneCurvesExtract *pcpce = new PointCloudPlaneCurvesExtract();
+  pcpce->SearchCurves(cloud);
+  for (int i = 0; i < _planeRings; i++)
   {
     mCurveId[i].clear();
-    // mCurveId[i].insert(mCurveId[i].end(), pcpd.mCurvesId[i].begin(), pcpd.mCurvesId[i].end());
-    //mCurveId[i].insert(mCurveId[i].end(), pcpd.mDensityCurvesId[i].begin(), pcpd.mDensityCurvesId[i].end());
-    mCurveId[i].insert(mCurveId[i].end(), pcpd.mSizeCurvesId[i].begin(), pcpd.mSizeCurvesId[i].end());
-    //mCurveId[i].insert(mCurveId[i].end(), pcpd.mRadiusCurvesId[i].begin(), pcpd.mRadiusCurvesId[i].end());
+    // mCurveId[i].insert(mCurveId[i].end(), pcpce.mCurvesId[i].begin(), pcpce.mCurvesId[i].end());
+    // mCurveId[i].insert(mCurveId[i].end(), pcpce.mDensityCurvesId[i].begin(), pcpce.mDensityCurvesId[i].end());
+    // mCurveId[i].insert(mCurveId[i].end(), pcpce.mRadiusCurvesId[i].begin(), pcpce.mRadiusCurvesId[i].end());
+    mCurveId[i].insert(mCurveId[i].end(), pcpce->mSizeCurvesId[i].begin(), pcpce->mSizeCurvesId[i].end());
   }
+
+  PointCloudPlaneSegment *pcps = new PointCloudPlaneSegment();
+  pcps->PlaneSegment(pcpce);
+
   finish = clock();
   float deltTime = (finish - start);
   deltTime /= CLOCKS_PER_SEC;
