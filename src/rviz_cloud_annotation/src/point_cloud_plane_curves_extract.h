@@ -26,7 +26,6 @@
 #include <pcl/PCLPointCloud2.h>
 #include <pcl/conversions.h>
 #include <pcl/io/pcd_io.h>
-#include <pcl/kdtree/kdtree_flann.h>
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
 
@@ -80,7 +79,6 @@ public:
 
   float mSentorMeanRadius[_numOfRings][_numOfAngleGrid] = { { 0 } };
   Uint64Vector mSentorIds[_numOfRings][_numOfAngleGrid];
-  Uint64Vector mSentorAngle[_numOfRings];
   Uint64Vector mSentorLabelVector[_numOfRings];
 
   float mScanringRadius[_numOfRings];
@@ -90,7 +88,7 @@ public:
                                             PointXYZRGBNormalCloud &outCurve);
   void CurveSizeFilter(const PointXYZRGBNormalCloud &Curve, int64 ringID, Uint64Vector &curveId,
                                          PointXYZRGBNormalCloud &outCurve);
-  void *CurvesRadiusFilter(const PointXYZRGBNormalCloud *CurvesVector, Uint64Vector *CurvesId);
+  void *CurvesRadiusFilter(PointXYZRGBNormalCloud *CurvesVector, Uint64Vector *CurvesId);
 
   float InverseSqrt(float x)
   {

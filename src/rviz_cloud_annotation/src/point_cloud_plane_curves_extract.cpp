@@ -94,28 +94,29 @@ void PointCloudPlaneCurvesExtract::CurveDensityFilter(const PointXYZRGBNormalClo
   }
 }
 
-void *PointCloudPlaneCurvesExtract::CurvesRadiusFilter(const PointXYZRGBNormalCloud *CurvesVector,
+void *PointCloudPlaneCurvesExtract::CurvesRadiusFilter(PointXYZRGBNormalCloud *CurvesVector,
                                                        Uint64Vector *CurvesId)
 {
   for (int i = 0; i < _planeRings; i++)
   {
     mSentorLabelVector[i].reserve(CurvesVector[i].size());
-    mSentorAngle[i].resize(CurvesId[i].size());
     for (int j = 0; j < CurvesVector[i].size(); j++)
     {
       float x = CurvesVector[i][j].x;
       float y = CurvesVector[i][j].y;
-      int atanAngle = (int)(((atan2f(y, x) / M_PI * 180 + 180) / _horizontalAngleResolution));
-      if (atanAngle < 0 || atanAngle >= _numOfAngleGrid)
+      int AngleGridId = (int)(((atan2f(y, x) / M_PI * 180 + 180) / _horizontalAngleResolution));
+      if (AngleGridId < 0 || AngleGridId >= _numOfAngleGrid)
       {
         continue;
       }
+      CurvesVector[i][j].rgba = (uint)AngleGridId;
       float radius = 1 / InverseSqrt(x * x + y * y);
-      mSentorIds[i][atanAngle].push_back(j);
-      mSentorAngle[i][j] = atanAngle;
+      CurvesVector[i][j].curvature = radius;// / mScanringRadius[i];
+
+      mSentorIds[i][AngleGridId].push_back(j);
       mSentorLabelVector[i].push_back(0);
-      mSentorMeanRadius[i][atanAngle] = (mSentorMeanRadius[i][atanAngle] * mSentorIds[i][atanAngle].size() + radius) /
-                                        (mSentorIds[i][atanAngle].size() + 1);
+      mSentorMeanRadius[i][AngleGridId] = (mSentorMeanRadius[i][AngleGridId] * mSentorIds[i][AngleGridId].size() + radius) /
+                                          (mSentorIds[i][AngleGridId].size() + 1);
     }
   }
 
@@ -189,15 +190,11 @@ void PointCloudPlaneCurvesExtract::CurveSizeFilter(const PointXYZRGBNormalCloud 
         for (uint64 k = begin; k < end; k++)
         {
           LabelArray[k] = -1;
-          // record  SentorGrid nums
-          uint64 AngleId = mSentorAngle[ringID][k];
-          mSentorIds[ringID][AngleId].erase(mSentorIds[ringID][AngleId].end() - 1);
         }
       }
       begin = end;
     }
   }
-
   for (uint64 i = 0; i < Curve.size(); i += 1)
   {
     if (LabelArray[i] != -1)
