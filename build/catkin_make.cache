@@ -1,2 +1,0 @@
-rviz_cloud_annotation
--DCATKIN_DEVEL_PREFIX=/home/halo/WorkSpace/Columbus_Ground_Detection/devel -DCMAKE_INSTALL_PREFIX=/home/halo/WorkSpace/Columbus_Ground_Detection/install -G Unix Makefiles
