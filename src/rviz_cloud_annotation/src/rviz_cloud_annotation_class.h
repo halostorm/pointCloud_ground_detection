@@ -8,9 +8,7 @@
 #include "rviz_cloud_annotation_params.h"
 #include "rviz_cloud_annotation_points.h"
 #include "rviz_cloud_annotation_undo.h"
-#include "point_cloud_plane_hf.h"
 #include "point_neighborhood_search.h"
-//#include "point_cloud_plane_curves_extract.h"
 #include "point_cloud_plane_segment.h"
 
 #include <sys/stat.h>

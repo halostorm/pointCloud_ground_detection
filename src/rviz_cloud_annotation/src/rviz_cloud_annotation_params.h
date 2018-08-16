@@ -13,6 +13,7 @@
 
 #define DISTANCE_LIMMIT 20
 #define HEIGHT_LIMMIT 1.5
+#define _M_PI 3.1415926
 
 #define _max(a, b) (((a) > (b)) ? (a) : (b))
 #define _min(a, b) (((a) > (b)) ? (b) : (a))
