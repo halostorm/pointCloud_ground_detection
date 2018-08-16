@@ -8,6 +8,24 @@
         "hash_set": "cpp",
         "initializer_list": "cpp",
         "ratio": "cpp",
-        "thread": "cpp"
+        "thread": "cpp",
+        "cctype": "cpp",
+        "cmath": "cpp",
+        "csignal": "cpp",
+        "cstdarg": "cpp",
+        "cstddef": "cpp",
+        "cstdio": "cpp",
+        "cstdlib": "cpp",
+        "cstring": "cpp",
+        "ctime": "cpp",
+        "cwchar": "cpp",
+        "cwctype": "cpp",
+        "atomic": "cpp",
+        "strstream": "cpp",
+        "chrono": "cpp",
+        "cstdint": "cpp",
+        "iosfwd": "cpp",
+        "cinttypes": "cpp",
+        "typeindex": "cpp"
     }
 }

@@ -1,16 +1,16 @@
 #include "point_cloud_plane_curves_extract.h"
 
-PointXYZRGBNormalCloud *PointCloudPlaneCurvesExtract::SearchCurves(const PointXYZRGBNormalCloud &PointCloud)
+void PointCloudPlaneCurvesExtract::SearchCurves(const PointXYZRGBNormalCloud &PointCloud)
 {
   for (int i = 0; i < _numOfRings; i++)
   {
-    mCurvesVector[i].reserve(2000);
-    mCurvesId[i].reserve(2000);
+    mCurvesVector[i].reserve(_defaultCurveSize);
+    mCurvesId[i].reserve(_defaultCurveSize);
   }
   for (uint64 i = 0; i < PointCloud.size(); i++)
   {
     PointXYZRGBNormal point = PointCloud[i];
-    float angle = std::atan(point.z * InverseSqrt(point.x * point.x + point.y * point.y)) / (1.0f * M_PI) * 180.0f;
+    float angle = std::atan(point.z / m_sqrt(point.x * point.x + point.y * point.y)) / (1.0f * M_PI) * 180.0f;
     int64 ringID = GetScanringID(angle);
     if (ringID < _numOfRings && ringID >= 0)
     {
@@ -23,36 +23,28 @@ PointXYZRGBNormalCloud *PointCloudPlaneCurvesExtract::SearchCurves(const PointXY
   {
     mScanringRadius[i] = GetScanringRadius(i);
   }
-
   // DensityFilter
   for (int i = 0; i < _planeRings; i++)
   {
-    // ROS_INFO("PointCloudPlaneCurvesExtract: mCurvesVector[%d] Size : %ld", i, mCurvesVector[i].size());
-    if (mCurvesVector[i].size() > _windowsize)
+    if (mCurvesVector[i].size() > _curveSizeThreshold)
     {
       CurveDensityFilter(mCurvesVector[i], i, mCurvesId[i], mDensityCurvesVector[i]);
     }
-    // ROS_INFO("PointCloudPlaneCurvesExtract: mDensityCurvesVector[%d] Size : %ld", i, mDensityCurvesVector[i].size());
   }
-
   // RadiusFilter
   CurvesRadiusFilter(mDensityCurvesVector, mDensityCurvesId);
-
   // SizeFilter
   for (int i = 0; i < _planeRings; i++)
   {
-    //ROS_INFO("PointCloudPlaneCurvesExtract: mRadiusCurvesVector[%d] Size : %ld", i, mRadiusCurvesVector[i].size());
-    if (mRadiusCurvesVector[i].size() > _windowsize)
+    if (mRadiusCurvesVector[i].size() > _curveSizeThreshold)
     {
       CurveSizeFilter(mRadiusCurvesVector[i], i, mRadiusCurvesId[i], mSizeCurvesVector[i]);
     }
-    //ROS_INFO("PointCloudPlaneCurvesExtract: mSizeCurvesVector[%d] Size : %ld", i, mSizeCurvesVector[i].size());
   }
-  return mSizeCurvesVector;
 }
 
-void PointCloudPlaneCurvesExtract::CurveDensityFilter(const PointXYZRGBNormalCloud &Curve, int64 ringID,
-                                                      Uint64Vector &curveId, PointXYZRGBNormalCloud &outCurve)
+void PointCloudPlaneCurvesExtract::CurveDensityFilter(const PointXYZRGBNormalCloud &Curve, const int64 ringID,
+                                                      const Uint64Vector &curveId, PointXYZRGBNormalCloud &outCurve)
 {
   outCurve.reserve(Curve.size());
   mDensityCurvesId[ringID].reserve(curveId.size());
@@ -72,9 +64,9 @@ void PointCloudPlaneCurvesExtract::CurveDensityFilter(const PointXYZRGBNormalClo
     float dy = Curve[i].y - Curve[i - 1].y;
     float dz = Curve[i].z - Curve[i - 1].z;
     arcNum++;
-    radius = 1 / InverseSqrt(Curve[i].x * Curve[i].x + Curve[i].y * Curve[i].y);
+    radius = m_sqrt(Curve[i].x * Curve[i].x + Curve[i].y * Curve[i].y);
     radiusMean += radius;
-    arcLen += (1 / InverseSqrt(dx * dx + dy * dy + dz * dz)) * (2 * _basicRadius / (radius + radius_1));
+    arcLen += (m_sqrt(dx * dx + dy * dy + dz * dz)) * (2 * _basicRadius / (radius + radius_1));
     radius_1 = radius;
     if (arcLen >= _srcLenThreshold)
     {
@@ -95,7 +87,7 @@ void PointCloudPlaneCurvesExtract::CurveDensityFilter(const PointXYZRGBNormalClo
 }
 
 void *PointCloudPlaneCurvesExtract::CurvesRadiusFilter(PointXYZRGBNormalCloud *CurvesVector,
-                                                       Uint64Vector *CurvesId)
+                                                       const Uint64Vector *CurvesId)
 {
   for (int i = 0; i < _planeRings; i++)
   {
@@ -104,19 +96,20 @@ void *PointCloudPlaneCurvesExtract::CurvesRadiusFilter(PointXYZRGBNormalCloud *C
     {
       float x = CurvesVector[i][j].x;
       float y = CurvesVector[i][j].y;
-      int AngleGridId = (int)(((atan2f(y, x) / M_PI * 180 + 180) / _horizontalAngleResolution));
+      int AngleGridId = (int)(((atan2f(y, x) / M_PI * 180 + 180) / _AngleGridResolution));
       if (AngleGridId < 0 || AngleGridId >= _numOfAngleGrid)
       {
         continue;
       }
       CurvesVector[i][j].rgba = (uint)AngleGridId;
-      float radius = 1 / InverseSqrt(x * x + y * y);
-      CurvesVector[i][j].curvature = radius;// / mScanringRadius[i];
+      float radius = m_sqrt(x * x + y * y);
+      CurvesVector[i][j].curvature = radius;  // / mScanringRadius[i];
 
       mSentorIds[i][AngleGridId].push_back(j);
       mSentorLabelVector[i].push_back(0);
-      mSentorMeanRadius[i][AngleGridId] = (mSentorMeanRadius[i][AngleGridId] * mSentorIds[i][AngleGridId].size() + radius) /
-                                          (mSentorIds[i][AngleGridId].size() + 1);
+      mSentorMeanRadius[i][AngleGridId] =
+          (mSentorMeanRadius[i][AngleGridId] * mSentorIds[i][AngleGridId].size() + radius) /
+          (mSentorIds[i][AngleGridId].size() + 1);
     }
   }
 
@@ -158,8 +151,8 @@ void *PointCloudPlaneCurvesExtract::CurvesRadiusFilter(PointXYZRGBNormalCloud *C
   }
 }
 
-void PointCloudPlaneCurvesExtract::CurveSizeFilter(const PointXYZRGBNormalCloud &Curve, int64 ringID,
-                                                   Uint64Vector &curveId, PointXYZRGBNormalCloud &outCurve)
+void PointCloudPlaneCurvesExtract::CurveSizeFilter(const PointXYZRGBNormalCloud &Curve, const int64 ringID,
+                                                   const Uint64Vector &curveId, PointXYZRGBNormalCloud &outCurve)
 {
   outCurve.reserve(Curve.size());
   mSizeCurvesId[ringID].reserve(curveId.size());
@@ -180,7 +173,7 @@ void PointCloudPlaneCurvesExtract::CurveSizeFilter(const PointXYZRGBNormalCloud 
     float dy = Curve[i].y - Curve[i - 1].y;
     float dz = Curve[i].z - Curve[i - 1].z;
     meanZ += dz;
-    float dis = (1 / InverseSqrt(dx * dx + dy * dy + dz * dz)) * (ratio);
+    float dis = (m_sqrt(dx * dx + dy * dy + dz * dz)) * (ratio);
     if (dis > _breakingDistanceThreshold)
     {
       end = i;

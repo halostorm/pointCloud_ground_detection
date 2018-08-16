@@ -639,7 +639,7 @@ public:
     stream << int_temp;
     string_temp = stream.str(); //此处也可以用 stream>>string_temp
   }
-  float m_sqrt(float x)
+  float _sqrt(float x)
   {
     float half_x = 0.5 * x;
     int i = *((int *)&x);

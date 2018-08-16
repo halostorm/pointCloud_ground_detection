@@ -1,17 +1,17 @@
-#include "point_cloud_plane_curves_extract.h"
+#ifndef POINT_CLOUD_PLANE_SEGMENT
+#define POINT_CLOUD_PLANE_SEGMENT
 
-#define _sectorNum 180
-#define _sentorAngleResolution 2
+#include "point_cloud_plane_curves_extract.h"
 
 struct Sentor
 {
-  float conf;
-  int smooth;
-  float plane[4];
-  float edge[2];
+  int conf;  // Ground Confidence  = number of points that on the sentor
+  float smooth;
+  float inclination;
+  float curveCenter[3];
+  float radiusEdge[2];
   PointXYZRGBNormalCloud Points;
 };
-
 typedef std::vector<Sentor> sensorVector;
 
 class PointCloudPlaneSegment
@@ -21,13 +21,11 @@ public:
 
   void PlaneSegment(const PointCloudPlaneCurvesExtract *pcpce);
 
-  float InverseSqrt(float x)
+  float getInclination(const float A[3], const float B[3])
   {
-    float half_x = 0.5 * x;
-    int i = *((int *)&x);              // 以整数方式读取X
-    i = 0x5f3759df - (i >> 1);         // 神奇的步骤
-    x = *((float *)&i);                // 再以浮点方式读取i
-    x = x * (1.5 - (half_x * x * x));  // 牛顿迭代一遍提高精度
-    return x;
+    float inclination =
+        std::atan2((A[2] - B[2]), m_sqrt((A[0] - B[0]) * (A[0] - B[0]) + (A[1] - B[1]) * (A[1] - B[1])));
+    return inclination;
   }
 };
+#endif

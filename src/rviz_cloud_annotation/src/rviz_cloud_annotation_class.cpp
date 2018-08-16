@@ -337,7 +337,7 @@ void RVizCloudAnnotation::LoadCloud(const std::string &filename, const std::stri
     point.y = cloud_in[i].y;
     point.z = cloud_in[i].z;
 
-    float radius = m_sqrt(point.x * point.x + point.y * point.y);
+    float radius = _sqrt(point.x * point.x + point.y * point.y);
     if (radius < DISTANCE_LIMMIT && (point.z < HEIGHT_LIMMIT))
     {
       colorize_point_cloud(cloud_in[i].intensity, &point);
