@@ -1944,10 +1944,10 @@ void RVizCloudAnnotation::generateBbox(const PointXYZRGBNormalCloud &cloud, bool
     float shape[10];
     float A = tan(BBOX_YAW);
     float B = tan(BBOX_YAW - _M_PI * 0.5);
-    float B1 = _max(s[5] - s[4] * B, s[7] - s[6] * B);
-    float B2 = _min(s[5] - s[4] * B, s[7] - s[6] * B);
-    float B3 = _max(s[3] - s[2] * A, s[1] - s[0] * A);
-    float B4 = _min(s[3] - s[2] * A, s[1] - s[0] * A);
+    float B1 = _max_(s[5] - s[4] * B, s[7] - s[6] * B);
+    float B2 = _min_(s[5] - s[4] * B, s[7] - s[6] * B);
+    float B3 = _max_(s[3] - s[2] * A, s[1] - s[0] * A);
+    float B4 = _min_(s[3] - s[2] * A, s[1] - s[0] * A);
 
     shape[0] = ((s[5] - s[4] * B) - (s[3] - s[2] * A)) / (A - B);
     shape[1] = ((s[5] - s[4] * B) * A - (s[3] - s[2] * A) * B) / (A - B);

@@ -23,6 +23,7 @@ void PointCloudPlaneSegment::PlaneSegment(const PointCloudPlaneCurvesExtract *pc
     {
       float smooth = 0;
       float center[3] = { 0 };
+      mPlane[i][j].planeParams = Eigen::VectorXf::Zero(4, 1);
       if (mPlane[i][j].conf < 3)
       {
         mPlane[i][j].smooth = -1;
@@ -52,6 +53,8 @@ void PointCloudPlaneSegment::PlaneSegment(const PointCloudPlaneCurvesExtract *pc
         mPlane[i][j].curveCenter[0] = center[0];
         mPlane[i][j].curveCenter[1] = center[1];
         mPlane[i][j].curveCenter[2] = center[2];
+        PointXYZRGBNormalCloud::Ptr cloud(new PointXYZRGBNormalCloud(mPlane[i][j].Points));
+        getPlane(cloud, mPlane[i][j].planeParams);
       }
       if (i == 0)
       {
@@ -64,9 +67,29 @@ void PointCloudPlaneSegment::PlaneSegment(const PointCloudPlaneCurvesExtract *pc
         mPlane[i][j].smooth = (smooth + mPlane[i - 1][j].smooth) * 0.5;
         mPlane[i][j].inclination = getInclination(mPlane[i][j].curveCenter, mPlane[i - 1][j].curveCenter);
       }
-      // printf("point_cloud_plane_segment: mPlane[%d][%u]: conf %d smooth %f inclination %f radiusEdge[%f, %f]\n", i, j,
+      // printf("point_cloud_plane_segment: mPlane[%d][%u]: conf %d smooth %f inclination %f radiusEdge[%f, %f]\n", i,
+      // j,
       //        mPlane[i][j].conf, mPlane[i][j].smooth, mPlane[i][j].inclination, mPlane[i][j].radiusEdge[0],
       //        mPlane[i][j].radiusEdge[1]);
     }
   }
+}
+
+void PointCloudPlaneSegment::getPlane(PointXYZRGBNormalCloud::Ptr cloud, Eigen::VectorXf &params)
+{
+  // 保存局内点索引
+  std::vector<int> inliers;
+  pcl::SampleConsensusModelPlane<PointXYZRGBNormal>::Ptr model_p(
+      new pcl::SampleConsensusModelPlane<PointXYZRGBNormal>(cloud));
+  pcl::RandomSampleConsensus<PointXYZRGBNormal> ransac(model_p);
+  ransac.setDistanceThreshold(0.01);
+  ransac.computeModel();
+  ransac.getInliers(inliers);
+
+  pcl::PointCloud<PointXYZRGBNormal>::Ptr final(new pcl::PointCloud<PointXYZRGBNormal>);
+  final->resize(inliers.size());
+
+  params = Eigen::VectorXf::Zero(4, 1);
+  ransac.getModelCoefficients(params);
+  //printf("params: 1 %f 2 %f 3 %f 4 %f\n", params[0], params[1], params[2], params[3]);
 }

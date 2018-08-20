@@ -15,8 +15,8 @@
 #define HEIGHT_LIMMIT 1.5
 #define _M_PI 3.1415926
 
-#define _max(a, b) (((a) > (b)) ? (a) : (b))
-#define _min(a, b) (((a) > (b)) ? (b) : (a))
+#define _max_(a, b) (((a) > (b)) ? (a) : (b))
+#define _min_(a, b) (((a) > (b)) ? (b) : (a))
 
 namespace po = boost::program_options;
 namespace fs = boost::filesystem;
