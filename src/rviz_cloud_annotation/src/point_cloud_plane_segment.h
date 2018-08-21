@@ -5,13 +5,13 @@
 
 struct Sentor
 {
-  int conf; // Ground Confidence  = number of points that on the sentor
+  bool isGround;
+  int conf[2]; // Ground Confidence  = number of points that on the sentor
   float smooth;
-  float inclination;
-  float curveCenter[3];
   float radiusEdge[2];
   Eigen::VectorXf planeParams;
-  PointXYZRGBNormalCloud Points;
+  PointXYZRGBNormalCloud oneLinePoints;
+  PointXYZRGBNormalCloud twoLinePoints;
 };
 typedef std::vector<Sentor> sensorVector;
 
@@ -29,6 +29,6 @@ public:
     return inclination;
   }
 
-  void getPlane(PointXYZRGBNormalCloud::Ptr cloud ,Eigen::VectorXf &params);
+  void getPlaneRansac(PointXYZRGBNormalCloud::Ptr cloud ,Eigen::VectorXf &params);
 };
 #endif
