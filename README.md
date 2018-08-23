@@ -1,106 +1,171 @@
-#Nullmax点云标注工具-使用手册
-[TOC]
-##I. 配置使用环境及安装
-- `配置要求：ubuntu16.04 + ROS Kinetic`
-### 1. **安装ROS-Kinetic**
-参考[ROS WiKi-安装说明](http://wiki.ros.org/kinetic/Installation/Ubuntu)
-```添加ROS源：
-sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
-添加ROS源秘钥：
-sudo apt-key adv --keyserver hkp://ha.pool.sks-keyservers.net:80 --recv-key 421C365BD9FF1F717815A3895523BAEEB01FA116
-更新源
-sudo apt-get update```
+基于线束的地面检测算法
+---------------------
+code文件共以下四个：
+![图片](https://nullmax.coding.net/api/project/35711/files/192200/imagePreview)
 ```
-安装ROS完整版：（由于使用Rviz，PCL等模块，请务必安装完整版）
-sudo apt-get install ros-kinetic-desktop-full
-sudo apt-cache search ros-kinetic
-初始化ROS：
-sudo rosdep init
-rosdep update
-添加环境变量
-echo "source /opt/ros/kinetic/setup.bash" >> ~/.bashrc
-source ~/.bashrc
-更新ROS环境变量
-source /opt/ros/kinetic/setup.bash```
+地面检测算法流程：
+１．　点云预处理，提取候选线束
+２．　"３步"线束滤波，提取地面线束
+３．　地面分割并计算描述子
 ```
-测试ROS是否成功安装:
-开启一个新的Teminnal，输入：
-roscore
-测试Rviz
-开启一个新的Teminnal，输入：
-rviz```
-成功显示Rviz界面如下：
-![1.png](/home/halo/Pictures/nullmax_tool/s1.png "sensor position" "width:720px")
-### 2. **安装 Nullmax Tools 标注工具**
+## **I. 点云预处理**
+
+１．点云ringID计算及地面线束截取
 ```
-(1) 解压 nullmax_tool.tar.gz, 进入文件夹nullmax_tool
-(2) 在nullmax_tool下开启终端，运行安装命令： sh install.sh
-(3) 显示 install successful 后，home文件夹下出现lidar_annotation文件夹，安装成功
+参数：
+#define _lowerBound -15　　
+#define _upperBound 15　　//Lidar垂直方向张角　(-15° ~15 °)
+#define _numOfRings 16　　//基于Lidar线数
+#define _horizontalAngleResolution 0.4 　//水平角分辨率
+
+计算点云ringID：
+float angle = std::atan(point.z / sqrt(point.x * point.x + point.y * point.y)) / (1.0f * M_PI) * 180.0f;
+int64 GetScanringID(const float &angle)
+{
+  return static_cast<int64>((angle - _lowerBound)
+　　　 /(1.0f * (_upperBound - _lowerBound)) * (_numOfRings - 1) + 0.5);
+}
+
+设定地面范围为半径30m的圆，对应选择线束0~5作为地面线束。
+```
+２．基准圆设定
+```
+参数：
+#define _basicRadius 6.9 　//基准圆半径
+#define _defaultCurveSize 2000　//每条线束默认点数，超过会自动扩张；设置该参数仅仅为了遍历效率
+#define _curveSizeThreshold 50   　// Curve点数阈值：大于阈值认为是待选曲线
+
+基准圆的半径设定为：第一条线束(半径最小)的半径，根据目前激光的安装方式，半径为6.9ｍ
+```
+原始点云：
+![图片](https://nullmax.coding.net/api/project/35711/files/192296/imagePreview)
+## **II. 第一步：密度滤波**
+
+```
+参数：
+// Density Filter Params
+//密度滤波滤波的作用是去除稀疏的障碍物和线束跳变区域
+#define _srcLenThreshold 0.2　//设定的弧长阈值
+#define _arcNumThreshold 7　//在设定弧长下遍历过的点数　的阈值
+```
+```
+算法细节：
+１．对每一条线束，从头遍历并累计弧长，每当弧长达到设定的弧长阈值_srcLenThreshold
+　（每新加入一个点ｉ，计算弧长时，真实的弧长增量需要通过该点的radius缩放到基准圆，成为等尺度的弧长）
+２．计算遍历过的点数Ｎ，Ｎ>=_arcNumThreshold，则该部分弧保留；反之，滤除点数少的弧.
+
 ```
 
-##II. 导入pcd文件
-1. **导入待标注点云pcd文件**
 ```
-Copy 待标注的点云.pcd格式文件到 lidar_annotation/pcd/ 文件夹下
+函数：
+void PointCloudPlaneCurvesExtract::CurveDensityFilter(
+    const PointXYZRGBNormalCloud &Curve, 
+    const int64 ringID, 
+    const Uint64Vector &curveId,
+    PointXYZRGBNormalCloud &outCurve
+);
+```
+密度滤波之后：
+![图片](https://nullmax.coding.net/api/project/35711/files/192282/imagePreview)
+## **II. 第二步：相对半径滤波**
+```
+参数：
+// Radius Filter Params
+//相对半径滤波的作用是去除致密的障碍物，需要讲每条线束划分为Ｎ和扇形区域
+#define _AngleGridResolution 2.0　//　扇形角分辨率
+#define _numOfAngleGrid 180  //   每条弧扇形区域个数　＝　360 / _AngleGridResolution
+#define _radiusScaleThreshold 0.2　//相对半径阈值
+```
+```
+算法细节：
+１．对每一条线束，
+　　(1)从头遍历记录： 
+　　　　每个Grid的点
+　　　　每个点对应的角度索引（保存在point.rgba 中）
+　　　　每个点到水平圆点的距离（保存在point.curvature 中）
+　　//注意：这里采用点和Grid双相索引的策略，避免重复查找遍历
+　　(2) 计算每个Grid的半径　＝　所有点到水平原点的距离的均值，若没有点，Grid的半径记为下一条线相同角度Grid的半径
+２．对一条线束m的一个Gridmi 半径为Rmi, 该线束的理想半径为Rm,如果：
+　　      Rmi - Rm-1i >= (Rm - Rm-1)*_radiusScaleThreshold
+         则保留Gridmi,　反之清除Grimi的点。
+ //思想：致密障碍物上的线束水平半径相距较近，或部分消失，可以据此滤除这些障碍物
+```
+```
+函数：
+void *CurvesRadiusFilter(
+    PointXYZRGBNormalCloud *CurvesVector, 
+    const Uint64Vector *CurvesId
+);
+```
+相对半径滤波之后：
+![图片](https://nullmax.coding.net/api/project/35711/files/192294/imagePreview)
+
+## **II. 第三步：尺度滤波**
+```
+参数：
+// Size Filter Params
+//找到线束的"缺口"作为分割，滤除过短的线段
+#define _breakingDistanceThreshold 0.2　//缺口阈值
+#define _breakingSizeThreshold 30　//线段长度阈值（点数）
+```
+```
+算法细节：
+１．对每一条线束，
+　　(1)从头遍历，查找缺口
+　　(2)计算两个缺口之间的点数，太短则滤除
+```
+```
+函数：
+void CurveSizeFilter(
+    const PointXYZRGBNormalCloud &Curve, 
+    const int64 ringID, 
+    const Uint64Vector &curveId,
+    PointXYZRGBNormalCloud &outCurve
+);
+```
+尺度滤波之后：
+![图片](https://nullmax.coding.net/api/project/35711/files/192290/imagePreview)
+
+## **III. 地面分割/计算描述子**
+
+```
+思想：
+　将地面以2.0°的角分辨率，共６条线束，分为6*180块扇形区域，每块区域根据点数判定是否是地面，是地面则计算描述子
+　//注意：这里地面分割方式与密度滤波中的相同，可以省略大量的重复计算，分割地面时进行Grid索引即可
+分割如下图：
 ```
 
-2. **开始标注**
+![图片](https://nullmax.coding.net/api/project/35711/files/192293/imagePreview)
 ```
-打开 Teminnal, 运行: sh run.sh
+参数：
+// Plane Segment Params
+#define _isGroundPointNumThreshold 3 //扇形区域的点数阈值：需要扇形的两端边缘曲线的点数均满足阈值条件
+#define _ransacDistanceThreshold 0.03　//扇形区域平面拟合　RANSAC算法距离误差阈值
 ```
-显示标注界面如下：
-![2.png](/home/halo/Pictures/nullmax_tool/s2.png "sensor position" "width:1080px")
 
-##III. 标注手册正篇
-- ==`首次使用请务必仔细阅读`==
-### 1. 标注面板详解
-`下面就上图中 A, B, C, D, E 5个模块做详细说明：`
+```
+描述子：
+struct Sentor
+{
+  bool isGround;　//是否地面
+  int conf[2]; 　// conf[0] ：后边缘曲线的点数　；　conf[1] ：前边缘曲线的点数　
+  float smooth; //平滑度
+  float radiusEdge[2];　//radiusEdge[0] ：后边缘曲线的半径　；radiusEdge[1] ：前边缘曲线的半径　
+  Eigen::VectorXf planeParams;　//该扇形区域的平面参数
+  PointXYZRGBNormalCloud oneLinePoints;　//后边缘曲线的点集
+  PointXYZRGBNormalCloud twoLinePoints;　//前后边缘曲线的点集和
+};
+```
 
- - [ ]**A. 标注菜单栏 **
 ```
-标注菜单栏由 [文件]， [编辑]，[视图]，[标记]，[选择] 5部分组成
-文件：(1)切换新文件，(2)清除当前帧标记，(3)保存
-编辑：(1)取消，(2)恢复
-视图：(1)增加点的尺寸，(2)减小点的尺寸，(3)重置点的尺寸
-标记：(1)清除当前物体的标记，(2)切换颜色，(3)设置BBox遮挡系数，(4)调节BBox方位，(5)调节BBox尺寸
-选择：(1)跳转至下一物体，(2)跳转至上一物体
+具体描述子的计算：
+函数：
+void PlaneSegment(
+    const PointCloudPlaneCurvesExtract *pcpce
+);
 ```
-```
-特别说明：
-1.切换新文件会自动保存当前文件的标注信息
-2.取消/恢复开销较大，尽量避免使用
-3.标记完成一个物体后，需要切换到下一个物体进行标注，否则会覆盖当前标记；选择新的颜色会自动切换到下一物体；物体ID显示在面板上
-4.标记BBox时，颜色 1～5，6~10，11~15，16~20 分别对应标签： 小车，大车，行人，骑行；标记其他非BBox时，颜色与标签无关；
-5.标记BBOX时，需要设置方位角和遮挡系数，请以实际为准标注，0--不遮挡，1--完全遮挡
-尽量使用简洁的方式完成标注，熟练使用快捷键可以有效提高标注速度。
-```
- - [ ]**B. 快速选择栏 **
- ```
-快速选择栏第一行，标注类型： BBox，地面，路沿，车道线
-第二行：操作类型：移动，标记，删除，选择(无效)
-第三行：选择方式：点，矩形(浅)------矩形框内部一定深度的点被选中，矩形(深)------矩形框内部所有深度的点被选中，多短线------多边形选择，效果和矩形(浅)相同
-特别说明：
-路沿和车道线标注仅支持点标注。
-快速选择栏每个按钮都映射快捷键，例如： 标注地面 -- F2
-```
- - [ ]**C. 快捷键对照表**
-|快捷键|功能|快捷键|功能|
-|:--------:|:------------:|:--------:|:------------:|
-|Ctrl+Shift+O|打开新的一帧|Shift+O|增加点云大小|
-|Ctrl+Shift+K|保存当前标记|O|减小点云大小|
-|U|取消|Ctrl+Shift+C|清除当前标记的物体|
-|Shift+U|恢复|Shift+C|下一颜色|
-|Shift+N|下一物体|Shift+Z|上一颜色|
-|Shift+P|上一物体|T，G|调节遮挡系数|
-|R，F|调节方位|W，S，A，D，Q，E|调节BBox大小|
-### 2. 标注教程
-`首次使用请务必观看标注教程` 
-[https://pan.baidu.com/s/1qrHMToZx7mK5linGElsmJQ] 密码: jajm，
-为保证清晰度，请下载播放 
-```
-特别说明
-1.点云被重复标记为 BBox，路沿，车道线，地面时，标签优先级为 BBOX > 路沿/车道线 > 地面
-```
-`标注工具使用过程中如果遇见问题，或者代码部分有疑问，编辑需要，联系杜文文(18355180339 / wwdu@nullmax.ai)`
+
+
+
 
 
