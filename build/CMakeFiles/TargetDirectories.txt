@@ -1,6 +1,0 @@
-/home/halo/WorkSpace/Columbus_Ground_Detection/build/CMakeFiles/rebuild_cache.dir
-/home/halo/WorkSpace/Columbus_Ground_Detection/build/CMakeFiles/point_cloud_plane_detection.dir
-/home/halo/WorkSpace/Columbus_Ground_Detection/build/CMakeFiles/edit_cache.dir
-/home/halo/WorkSpace/Columbus_Ground_Detection/build/CMakeFiles/main.dir
-/home/halo/WorkSpace/Columbus_Ground_Detection/build/CMakeFiles/point_cloud_plane_detection_automoc.dir
-/home/halo/WorkSpace/Columbus_Ground_Detection/build/CMakeFiles/main_automoc.dir
