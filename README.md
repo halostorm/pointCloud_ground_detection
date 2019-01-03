@@ -1,7 +1,7 @@
 基于线束的地面检测算法(A very efficient ground detection algorithm in 16 lines pointcloud)
 ---------------------
-code文件共以下四个：
-![图片](https://nullmax.coding.net/api/project/35711/files/192200/imagePreview)
+code文件共4个：
+
 ```
 地面检测算法流程：
 １．　点云预处理，提取候选线束
@@ -38,7 +38,7 @@ int64 GetScanringID(const float &angle)
 基准圆的半径设定为：第一条线束(半径最小)的半径，根据目前激光的安装方式，半径为6.9ｍ
 ```
 原始点云：
-![图片](https://nullmax.coding.net/api/project/35711/files/192296/imagePreview)
+![图片](https://github.com/halostorm/Ground_Detection/image/s1.jpg)
 ## **II. 第一步：密度滤波**
 
 ```
@@ -65,8 +65,7 @@ void PointCloudPlaneCurvesExtract::CurveDensityFilter(
     PointXYZRGBNormalCloud &outCurve
 );
 ```
-密度滤波之后：
-![图片](https://nullmax.coding.net/api/project/35711/files/192282/imagePreview)
+
 ## **II. 第二步：相对半径滤波**
 ```
 参数：
@@ -96,9 +95,10 @@ void *CurvesRadiusFilter(
     PointXYZRGBNormalCloud *CurvesVector, 
     const Uint64Vector *CurvesId
 );
+
 ```
-相对半径滤波之后：
-![图片](https://nullmax.coding.net/api/project/35711/files/192294/imagePreview)
+密度滤波及相对半径滤波之后：
+![图片](https://github.com/halostorm/Ground_Detection/image/s2.jpg)
 
 ## **II. 第三步：尺度滤波**
 ```
@@ -124,7 +124,7 @@ void CurveSizeFilter(
 );
 ```
 尺度滤波之后：
-![图片](https://nullmax.coding.net/api/project/35711/files/192290/imagePreview)
+![图片](https://github.com/halostorm/Ground_Detection/image/s3.jpg)
 
 ## **III. 地面分割/计算描述子**
 
@@ -135,7 +135,7 @@ void CurveSizeFilter(
 分割如下图：
 ```
 
-![图片](https://nullmax.coding.net/api/project/35711/files/192293/imagePreview)
+![图片](https://github.com/halostorm/Ground_Detection/image/s4.jpg)
 ```
 参数：
 // Plane Segment Params
