@@ -38,7 +38,7 @@ int64 GetScanringID(const float &angle)
 基准圆的半径设定为：第一条线束(半径最小)的半径，根据目前激光的安装方式，半径为6.9ｍ
 ```
 原始点云：
-![图片](https://github.com/halostorm/Ground_Detection/images/s1.jpg)
+![图片](https://github.com/halostorm/Ground_Detection/blob/master/images/s1.jpg)
 ## **II. 第一步：密度滤波**
 
 ```
@@ -98,7 +98,7 @@ void *CurvesRadiusFilter(
 
 ```
 密度滤波及相对半径滤波之后：
-![图片](https://github.com/halostorm/Ground_Detection/images/s2.jpg)
+![图片](https://github.com/halostorm/Ground_Detection/blob/master/images/s2.jpg)
 
 ## **II. 第三步：尺度滤波**
 ```
@@ -124,7 +124,7 @@ void CurveSizeFilter(
 );
 ```
 尺度滤波之后：
-![图片](https://github.com/halostorm/Ground_Detection/images/s3.jpg)
+![图片](https://github.com/halostorm/Ground_Detection/blob/master/images/s3.jpg)
 
 ## **III. 地面分割/计算描述子**
 
@@ -135,7 +135,7 @@ void CurveSizeFilter(
 分割如下图：
 ```
 
-![图片](https://github.com/halostorm/Ground_Detection/images/s4.jpg)
+![图片](https://github.com/halostorm/Ground_Detection/blob/master/images/s4.jpg)
 ```
 参数：
 // Plane Segment Params
